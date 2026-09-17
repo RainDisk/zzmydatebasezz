@@ -26,8 +26,6 @@ body {
     min-height: 100vh;
 }
 
-/* サイドバー */
-
 .sidebar {
     width: 230px;
     background: #222;
@@ -102,7 +100,9 @@ body {
     font-weight: bold;
 }
 
-/* メイン */
+/* =========================
+   メイン
+========================= */
 
 .main {
     margin-left: 230px;
@@ -306,6 +306,17 @@ td:last-child {
     text-align: center;
 }
 
+/* 履歴の操作ボタン */
+.history-button-row {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+}
+
+.history-button-row button {
+    margin: 0;
+}
+
 /* =========================
    年間集計
 ========================= */
@@ -403,6 +414,10 @@ canvas {
 
 @media (max-width: 700px) {
 
+    body {
+        font-size: 15px;
+    }
+
     .app {
         display: block;
     }
@@ -416,6 +431,7 @@ canvas {
         width: 100%;
     }
 
+    /* 上部メニュー */
     .topbar {
         display: block;
         background: #222;
@@ -423,10 +439,11 @@ canvas {
         position: sticky;
         top: 0;
         z-index: 100;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.15);
     }
 
     .mobile-title {
-        padding: 12px 15px 8px;
+        padding: 10px 15px 7px;
         font-size: 18px;
         font-weight: bold;
     }
@@ -436,44 +453,290 @@ canvas {
         overflow-x: auto;
         gap: 5px;
         padding: 5px 10px 10px;
+        -webkit-overflow-scrolling: touch;
     }
 
     .mobile-nav .nav-button {
         width: auto;
         flex-shrink: 0;
         margin: 0;
-        padding: 8px 12px;
+        padding: 9px 13px;
         white-space: nowrap;
         font-size: 14px;
     }
 
     .content {
-        padding: 15px 10px;
+        padding: 12px 10px;
     }
 
     .page-title {
-        font-size: 24px;
+        font-size: 23px;
+        margin-bottom: 14px;
     }
 
+    /* カード */
+    .card {
+        padding: 15px;
+        margin-bottom: 15px;
+        border-radius: 8px;
+    }
+
+    .card h2 {
+        font-size: 19px;
+        margin-bottom: 12px;
+    }
+
+    /* 入力フォーム */
     .form-row {
         grid-template-columns: 1fr;
-        gap: 4px;
+        gap: 5px;
+        margin-bottom: 13px;
     }
 
+    label {
+        font-size: 14px;
+    }
+
+    input,
+    select {
+        padding: 11px 10px;
+        font-size: 16px;
+    }
+
+    .item-group {
+        padding: 12px;
+        margin-bottom: 15px;
+    }
+
+    .item-group-title {
+        font-size: 17px;
+        margin-bottom: 12px;
+    }
+
+    .total-box {
+        padding: 12px;
+    }
+
+    .total-row {
+        font-size: 17px;
+    }
+
+    /* ボタン */
+    .button-row {
+        gap: 8px;
+    }
+
+    .button-row button {
+        flex: 1;
+        min-height: 44px;
+        padding: 10px 12px;
+    }
+
+    /* 年間データ */
     .summary-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+
+    .summary-card {
+        padding: 11px;
+    }
+
+    .summary-label {
+        font-size: 13px;
+    }
+
+    .summary-value {
+        font-size: 17px;
+        word-break: break-all;
+    }
+
+    .dashboard-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+
+    .dashboard-card {
+        padding: 14px;
+    }
+
+    .dashboard-card-title {
+        font-size: 13px;
+    }
+
+    .dashboard-card-value {
+        font-size: 20px;
+        word-break: break-all;
+    }
+
+    /* =========================
+       履歴
+       スマホでは表をカード化
+    ========================= */
+
+    .table-wrapper {
+        overflow: visible;
+    }
+
+    table {
+        width: 100%;
+        min-width: 0;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    table thead {
+        display: none;
+    }
+
+    table tbody {
+        display: block;
+    }
+
+    table tbody tr {
+        display: block;
+        background: #fafafa;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        margin-bottom: 12px;
+        padding: 10px 12px;
+    }
+
+    table tbody tr:last-child {
+        margin-bottom: 0;
+    }
+
+    table tbody tr td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        min-height: 36px;
+        border: none;
+        border-bottom: 1px solid #e5e5e5;
+        padding: 7px 0;
+        text-align: right;
+        white-space: normal;
+    }
+
+    table tbody tr td:last-child {
+        border-bottom: none;
+        justify-content: flex-end;
+        padding-top: 10px;
+    }
+
+    table tbody tr td::before {
+        font-weight: bold;
+        color: #666;
+        margin-right: 15px;
+        text-align: left;
+    }
+
+    table tbody tr td:nth-child(1)::before {
+        content: "支給日";
+    }
+
+    table tbody tr td:nth-child(2)::before {
+        content: "総支給";
+    }
+
+    table tbody tr td:nth-child(3)::before {
+        content: "控除合計";
+    }
+
+    table tbody tr td:nth-child(4)::before {
+        content: "手取り";
+    }
+
+    table tbody tr td:nth-child(5)::before {
+        content: "";
+        display: none;
+    }
+
+    .history-button-row {
+        width: 100%;
+        justify-content: flex-end;
+        gap: 8px;
+    }
+
+    .history-button-row button {
+        min-width: 72px;
+        min-height: 40px;
+        padding: 8px 12px;
+    }
+
+    /* 空データ表示 */
+    table tbody tr.empty-row {
+        display: block;
+        text-align: center;
+        background: white;
+    }
+
+    table tbody tr.empty-row td {
+        display: block;
+        text-align: center;
+        border: none;
+    }
+
+    table tbody tr.empty-row td::before {
+        display: none;
+    }
+
+    /* =========================
+       グラフ
+    ========================= */
+
+    .chart-wrapper {
+        overflow-x: auto;
+        width: 100%;
+    }
+
+    canvas {
+        width: 100%;
+        min-width: 0;
+        height: auto;
+        aspect-ratio: 2 / 1;
+    }
+
+    /* バックアップ・復元 */
+    .backup-area {
+        flex-direction: column;
+    }
+
+    .backup-area button {
+        width: 100%;
+        min-height: 44px;
+    }
+}
+
+/* =========================
+   より小さいスマホ
+========================= */
+
+@media (max-width: 400px) {
+
+    .content {
+        padding: 10px 8px;
+    }
+
+    .card {
+        padding: 12px;
     }
 
     .dashboard-grid {
         grid-template-columns: 1fr;
     }
 
-    canvas {
-        min-width: 800px;
+    .summary-grid {
+        grid-template-columns: 1fr;
     }
 
-    .chart-wrapper {
-        overflow-x: auto;
+    .dashboard-card-value {
+        font-size: 22px;
+    }
+
+    .total-row {
+        font-size: 16px;
     }
 }
 </style>
@@ -528,11 +791,11 @@ canvas {
     </aside>
 
 
-    <!-- =========================
-         スマホ用トップメニュー
-    ========================== -->
-
     <div class="main">
+
+        <!-- =========================
+             スマホ用トップメニュー
+        ========================== -->
 
         <div class="topbar">
 
@@ -575,11 +838,11 @@ canvas {
                 </button>
 
             </div>
+
         </div>
 
 
         <main class="content">
-
 
             <!-- =====================================================
                  年間データ
@@ -780,8 +1043,6 @@ canvas {
                         </div>
 
 
-                        <!-- 支給 -->
-
                         <div class="item-group">
 
                             <div class="item-group-title">
@@ -796,7 +1057,7 @@ canvas {
                                 <input type="number"
                                        id="salaryBase"
                                        class="amount-input"
-                                       value="337000"
+                                       value="0"
                                        step="1">
                             </div>
 
@@ -808,7 +1069,7 @@ canvas {
                                 <input type="number"
                                        id="salaryAdjustment"
                                        class="amount-input"
-                                       value="29600"
+                                       value="0"
                                        step="1">
                             </div>
 
@@ -856,10 +1117,9 @@ canvas {
                                 <input type="number"
                                        id="salaryStockAllowance"
                                        class="amount-input"
-                                       value="600"
+                                       value="0"
                                        step="1">
                             </div>
-
 
                             <div class="total-box">
 
@@ -875,8 +1135,6 @@ canvas {
 
                         </div>
 
-
-                        <!-- 控除 -->
 
                         <div class="item-group">
 
@@ -952,7 +1210,7 @@ canvas {
                                 <input type="number"
                                        id="salaryMutualAid"
                                        class="amount-input"
-                                       value="350"
+                                       value="0"
                                        step="1">
                             </div>
 
@@ -964,7 +1222,7 @@ canvas {
                                 <input type="number"
                                        id="salaryStock"
                                        class="amount-input"
-                                       value="5600"
+                                       value="0"
                                        step="1">
                             </div>
 
@@ -983,7 +1241,6 @@ canvas {
                             <div class="help-text">
                                 年末調整はマイナスの金額をそのまま入力できます。
                             </div>
-
 
                             <div class="total-box">
 
@@ -1092,8 +1349,6 @@ canvas {
                         </div>
 
 
-                        <!-- 支給 -->
-
                         <div class="item-group">
 
                             <div class="item-group-title">
@@ -1144,10 +1399,9 @@ canvas {
                                 <input type="number"
                                        id="bonusStockAllowance"
                                        class="amount-input"
-                                       value="1800"
+                                       value="0"
                                        step="1">
                             </div>
-
 
                             <div class="total-box">
 
@@ -1163,8 +1417,6 @@ canvas {
 
                         </div>
 
-
-                        <!-- 控除 -->
 
                         <div class="item-group">
 
@@ -1252,7 +1504,7 @@ canvas {
                                 <input type="number"
                                        id="bonusStock"
                                        class="amount-input"
-                                       value="16800"
+                                       value="0"
                                        step="1">
                             </div>
 
@@ -1267,7 +1519,6 @@ canvas {
                                        value="0"
                                        step="1">
                             </div>
-
 
                             <div class="total-box">
 
@@ -1421,7 +1672,6 @@ canvas {
 
             </div>
 
-
         </main>
 
     </div>
@@ -1545,7 +1795,6 @@ function showPage(pageName) {
         target.classList.add("active");
     }
 
-
     const buttons =
         document.querySelectorAll(".nav-button");
 
@@ -1558,7 +1807,6 @@ function showPage(pageName) {
         }
 
     });
-
 
     window.scrollTo({
         top: 0,
@@ -1666,7 +1914,6 @@ function calculateSalary() {
         numberValue("salaryCommuterPass") +
         numberValue("salaryStockAllowance");
 
-
     const deductions =
         numberValue("salaryEmployment") +
         numberValue("salaryHealth") +
@@ -1677,10 +1924,8 @@ function calculateSalary() {
         numberValue("salaryStock") +
         numberValue("salaryYearEndAdjustment");
 
-
     const net =
         gross - deductions;
-
 
     document.getElementById(
         "salaryGrossDisplay"
@@ -1693,7 +1938,6 @@ function calculateSalary() {
     document.getElementById(
         "salaryNetDisplay"
     ).textContent = yen(net);
-
 
     return {
         gross,
@@ -1716,7 +1960,6 @@ function calculateBonus() {
         numberValue("bonusReduction") +
         numberValue("bonusStockAllowance");
 
-
     const deductions =
         numberValue("bonusEmployment") +
         numberValue("bonusHealth") +
@@ -1727,10 +1970,8 @@ function calculateBonus() {
         numberValue("bonusStock") +
         numberValue("bonusSettlement");
 
-
     const net =
         gross - deductions;
-
 
     document.getElementById(
         "bonusGrossDisplay"
@@ -1743,7 +1984,6 @@ function calculateBonus() {
     document.getElementById(
         "bonusNetDisplay"
     ).textContent = yen(net);
-
 
     return {
         gross,
@@ -1832,19 +2072,21 @@ function resetSalaryForm() {
         "salaryForm"
     ).reset();
 
-
     document.getElementById(
         "salaryDate"
     ).value = todayString();
 
+    /*
+     * 初期値は個人情報を含まないようにしています。
+     */
 
     document.getElementById(
         "salaryBase"
-    ).value = 337000;
+    ).value = 0;
 
     document.getElementById(
         "salaryAdjustment"
-    ).value = 29600;
+    ).value = 0;
 
     document.getElementById(
         "salaryOvertime"
@@ -1860,8 +2102,7 @@ function resetSalaryForm() {
 
     document.getElementById(
         "salaryStockAllowance"
-    ).value = 600;
-
+    ).value = 0;
 
     document.getElementById(
         "salaryEmployment"
@@ -1885,16 +2126,15 @@ function resetSalaryForm() {
 
     document.getElementById(
         "salaryMutualAid"
-    ).value = 350;
+    ).value = 0;
 
     document.getElementById(
         "salaryStock"
-    ).value = 5600;
+    ).value = 0;
 
     document.getElementById(
         "salaryYearEndAdjustment"
     ).value = "";
-
 
     document.getElementById(
         "salarySubmit"
@@ -1907,7 +2147,6 @@ function resetSalaryForm() {
     document.getElementById(
         "salaryMessage"
     ).textContent = "";
-
 
     calculateSalary();
 
@@ -1928,7 +2167,6 @@ document.getElementById(
 
         const calculation =
             calculateSalary();
-
 
         const data = {
 
@@ -1960,7 +2198,6 @@ document.getElementById(
                 numberValue(
                     "salaryStockAllowance"
                 ),
-
 
             employment:
                 numberValue(
@@ -2002,7 +2239,6 @@ document.getElementById(
                     "salaryYearEndAdjustment"
                 ),
 
-
             gross:
                 calculation.gross,
 
@@ -2017,7 +2253,6 @@ document.getElementById(
 
         };
 
-
         if (!data.date) {
 
             alert(
@@ -2026,7 +2261,6 @@ document.getElementById(
 
             return;
         }
-
 
         const transaction =
             db.transaction(
@@ -2038,7 +2272,6 @@ document.getElementById(
             transaction.objectStore(
                 "salaries"
             );
-
 
         if (editingSalaryId !== null) {
 
@@ -2064,7 +2297,6 @@ document.getElementById(
                     );
 
                 };
-
 
         } else {
 
@@ -2109,15 +2341,12 @@ function editSalary(id) {
                 return;
             }
 
-
             editingSalaryId = id;
-
 
             document.getElementById(
                 "salaryDate"
             ).value =
                 data.date || "";
-
 
             if ("base" in data) {
 
@@ -2152,7 +2381,6 @@ function editSalary(id) {
                     "salaryStockAllowance"
                 ).value =
                     data.stockAllowance;
-
 
                 document.getElementById(
                     "salaryEmployment"
@@ -2196,12 +2424,7 @@ function editSalary(id) {
                     ? ""
                     : data.yearEndAdjustment;
 
-
             } else {
-
-                /*
-                 * 旧形式データ互換
-                 */
 
                 document.getElementById(
                     "salaryBase"
@@ -2227,7 +2450,6 @@ function editSalary(id) {
                 document.getElementById(
                     "salaryStockAllowance"
                 ).value = 0;
-
 
                 document.getElementById(
                     "salaryEmployment"
@@ -2268,21 +2490,17 @@ function editSalary(id) {
 
             }
 
-
             calculateSalary();
-
 
             document.getElementById(
                 "salarySubmit"
             ).textContent =
                 "給与を更新";
 
-
             document.getElementById(
                 "salaryCancel"
             ).style.display =
                 "inline-block";
-
 
             showPage(
                 "salary-register"
@@ -2322,7 +2540,6 @@ function deleteSalary(id) {
         return;
     }
 
-
     const transaction =
         db.transaction(
             ["salaries"],
@@ -2335,7 +2552,6 @@ function deleteSalary(id) {
         );
 
     store.delete(id);
-
 
     transaction.oncomplete =
         function() {
@@ -2359,11 +2575,9 @@ function resetBonusForm() {
         "bonusForm"
     ).reset();
 
-
     document.getElementById(
         "bonusDate"
     ).value = todayString();
-
 
     document.getElementById(
         "bonusAmount"
@@ -2379,8 +2593,7 @@ function resetBonusForm() {
 
     document.getElementById(
         "bonusStockAllowance"
-    ).value = 1800;
-
+    ).value = 0;
 
     document.getElementById(
         "bonusEmployment"
@@ -2408,12 +2621,11 @@ function resetBonusForm() {
 
     document.getElementById(
         "bonusStock"
-    ).value = 16800;
+    ).value = 0;
 
     document.getElementById(
         "bonusSettlement"
     ).value = 0;
-
 
     document.getElementById(
         "bonusSubmit"
@@ -2426,7 +2638,6 @@ function resetBonusForm() {
     document.getElementById(
         "bonusMessage"
     ).textContent = "";
-
 
     calculateBonus();
 
@@ -2445,10 +2656,8 @@ document.getElementById(
 
         event.preventDefault();
 
-
         const calculation =
             calculateBonus();
-
 
         const data = {
 
@@ -2476,7 +2685,6 @@ document.getElementById(
                 numberValue(
                     "bonusStockAllowance"
                 ),
-
 
             employment:
                 numberValue(
@@ -2518,7 +2726,6 @@ document.getElementById(
                     "bonusSettlement"
                 ),
 
-
             gross:
                 calculation.gross,
 
@@ -2533,7 +2740,6 @@ document.getElementById(
 
         };
 
-
         if (!data.date) {
 
             alert(
@@ -2542,7 +2748,6 @@ document.getElementById(
 
             return;
         }
-
 
         const transaction =
             db.transaction(
@@ -2554,7 +2759,6 @@ document.getElementById(
             transaction.objectStore(
                 "bonuses"
             );
-
 
         if (editingBonusId !== null) {
 
@@ -2580,7 +2784,6 @@ document.getElementById(
                     );
 
                 };
-
 
         } else {
 
@@ -2625,15 +2828,12 @@ function editBonus(id) {
                 return;
             }
 
-
             editingBonusId = id;
-
 
             document.getElementById(
                 "bonusDate"
             ).value =
                 data.date || "";
-
 
             if ("amount" in data) {
 
@@ -2656,7 +2856,6 @@ function editBonus(id) {
                     "bonusStockAllowance"
                 ).value =
                     data.stockAllowance;
-
 
                 document.getElementById(
                     "bonusEmployment"
@@ -2698,12 +2897,7 @@ function editBonus(id) {
                 ).value =
                     data.settlement;
 
-
             } else {
-
-                /*
-                 * 旧形式データ互換
-                 */
 
                 document.getElementById(
                     "bonusAmount"
@@ -2721,7 +2915,6 @@ function editBonus(id) {
                 document.getElementById(
                     "bonusStockAllowance"
                 ).value = 0;
-
 
                 document.getElementById(
                     "bonusEmployment"
@@ -2761,21 +2954,17 @@ function editBonus(id) {
 
             }
 
-
             calculateBonus();
-
 
             document.getElementById(
                 "bonusSubmit"
             ).textContent =
                 "賞与を更新";
 
-
             document.getElementById(
                 "bonusCancel"
             ).style.display =
                 "inline-block";
-
 
             showPage(
                 "bonus-register"
@@ -2815,7 +3004,6 @@ function deleteBonus(id) {
         return;
     }
 
-
     const transaction =
         db.transaction(
             ["bonuses"],
@@ -2828,7 +3016,6 @@ function deleteBonus(id) {
         );
 
     store.delete(id);
-
 
     transaction.oncomplete =
         function() {
@@ -2859,7 +3046,6 @@ function getAll(storeName, callback) {
 
     const request =
         store.getAll();
-
 
     request.onsuccess =
         function() {
@@ -2892,7 +3078,6 @@ function getRecord(
 
     const request =
         store.get(id);
-
 
     request.onsuccess =
         function() {
@@ -2927,7 +3112,6 @@ function loadSalaryList() {
                 }
             );
 
-
             const tbody =
                 document.getElementById(
                     "salaryList"
@@ -2935,15 +3119,25 @@ function loadSalaryList() {
 
             tbody.innerHTML = "";
 
-
             if (data.length === 0) {
 
-                tbody.innerHTML =
-                    '<tr><td colspan="5">給与データがありません。</td></tr>';
+                const tr =
+                    document.createElement("tr");
+
+                tr.className = "empty-row";
+
+                const td =
+                    document.createElement("td");
+
+                td.colSpan = 5;
+                td.textContent =
+                    "給与データがありません。";
+
+                tr.appendChild(td);
+                tbody.appendChild(tr);
 
                 return;
             }
-
 
             data.forEach(
                 function(item) {
@@ -2953,59 +3147,91 @@ function loadSalaryList() {
                             "tr"
                         );
 
-
                     const gross =
-                        getSalaryGross(
-                            item
-                        );
+                        getSalaryGross(item);
 
                     const deductions =
-                        getSalaryDeductions(
-                            item
-                        );
+                        getSalaryDeductions(item);
 
                     const net =
-                        getSalaryNet(
-                            item
-                        );
+                        getSalaryNet(item);
 
+                    /* 支給日 */
+                    const dateTd =
+                        document.createElement("td");
 
-                    tr.innerHTML = `
+                    dateTd.textContent =
+                        item.date || "";
 
-                        <td>
-                            ${item.date || ""}
-                        </td>
+                    tr.appendChild(dateTd);
 
-                        <td>
-                            ${yen(gross)}
-                        </td>
+                    /* 総支給 */
+                    const grossTd =
+                        document.createElement("td");
 
-                        <td>
-                            ${yen(deductions)}
-                        </td>
+                    grossTd.textContent =
+                        yen(gross);
 
-                        <td>
-                            ${yen(net)}
-                        </td>
+                    tr.appendChild(grossTd);
 
-                        <td>
+                    /* 控除 */
+                    const deductionTd =
+                        document.createElement("td");
 
-                            <button
-                                class="edit"
-                                onclick="editSalary(${item.id})">
-                                編集
-                            </button>
+                    deductionTd.textContent =
+                        yen(deductions);
 
-                            <button
-                                class="delete"
-                                onclick="deleteSalary(${item.id})">
-                                削除
-                            </button>
+                    tr.appendChild(deductionTd);
 
-                        </td>
+                    /* 手取り */
+                    const netTd =
+                        document.createElement("td");
 
-                    `;
+                    netTd.textContent =
+                        yen(net);
 
+                    tr.appendChild(netTd);
+
+                    /* 操作 */
+                    const actionTd =
+                        document.createElement("td");
+
+                    const actionDiv =
+                        document.createElement("div");
+
+                    actionDiv.className =
+                        "history-button-row";
+
+                    const editButton =
+                        document.createElement("button");
+
+                    editButton.className = "edit";
+                    editButton.textContent = "編集";
+
+                    editButton.addEventListener(
+                        "click",
+                        function() {
+                            editSalary(item.id);
+                        }
+                    );
+
+                    const deleteButton =
+                        document.createElement("button");
+
+                    deleteButton.className = "delete";
+                    deleteButton.textContent = "削除";
+
+                    deleteButton.addEventListener(
+                        "click",
+                        function() {
+                            deleteSalary(item.id);
+                        }
+                    );
+
+                    actionDiv.appendChild(editButton);
+                    actionDiv.appendChild(deleteButton);
+                    actionTd.appendChild(actionDiv);
+                    tr.appendChild(actionTd);
 
                     tbody.appendChild(tr);
 
@@ -3039,7 +3265,6 @@ function loadBonusList() {
                 }
             );
 
-
             const tbody =
                 document.getElementById(
                     "bonusList"
@@ -3047,15 +3272,25 @@ function loadBonusList() {
 
             tbody.innerHTML = "";
 
-
             if (data.length === 0) {
 
-                tbody.innerHTML =
-                    '<tr><td colspan="5">賞与データがありません。</td></tr>';
+                const tr =
+                    document.createElement("tr");
+
+                tr.className = "empty-row";
+
+                const td =
+                    document.createElement("td");
+
+                td.colSpan = 5;
+                td.textContent =
+                    "賞与データがありません。";
+
+                tr.appendChild(td);
+                tbody.appendChild(tr);
 
                 return;
             }
-
 
             data.forEach(
                 function(item) {
@@ -3065,59 +3300,91 @@ function loadBonusList() {
                             "tr"
                         );
 
-
                     const gross =
-                        getBonusGross(
-                            item
-                        );
+                        getBonusGross(item);
 
                     const deductions =
-                        getBonusDeductions(
-                            item
-                        );
+                        getBonusDeductions(item);
 
                     const net =
-                        getBonusNet(
-                            item
-                        );
+                        getBonusNet(item);
 
+                    /* 支給日 */
+                    const dateTd =
+                        document.createElement("td");
 
-                    tr.innerHTML = `
+                    dateTd.textContent =
+                        item.date || "";
 
-                        <td>
-                            ${item.date || ""}
-                        </td>
+                    tr.appendChild(dateTd);
 
-                        <td>
-                            ${yen(gross)}
-                        </td>
+                    /* 総支給 */
+                    const grossTd =
+                        document.createElement("td");
 
-                        <td>
-                            ${yen(deductions)}
-                        </td>
+                    grossTd.textContent =
+                        yen(gross);
 
-                        <td>
-                            ${yen(net)}
-                        </td>
+                    tr.appendChild(grossTd);
 
-                        <td>
+                    /* 控除 */
+                    const deductionTd =
+                        document.createElement("td");
 
-                            <button
-                                class="edit"
-                                onclick="editBonus(${item.id})">
-                                編集
-                            </button>
+                    deductionTd.textContent =
+                        yen(deductions);
 
-                            <button
-                                class="delete"
-                                onclick="deleteBonus(${item.id})">
-                                削除
-                            </button>
+                    tr.appendChild(deductionTd);
 
-                        </td>
+                    /* 手取り */
+                    const netTd =
+                        document.createElement("td");
 
-                    `;
+                    netTd.textContent =
+                        yen(net);
 
+                    tr.appendChild(netTd);
+
+                    /* 操作 */
+                    const actionTd =
+                        document.createElement("td");
+
+                    const actionDiv =
+                        document.createElement("div");
+
+                    actionDiv.className =
+                        "history-button-row";
+
+                    const editButton =
+                        document.createElement("button");
+
+                    editButton.className = "edit";
+                    editButton.textContent = "編集";
+
+                    editButton.addEventListener(
+                        "click",
+                        function() {
+                            editBonus(item.id);
+                        }
+                    );
+
+                    const deleteButton =
+                        document.createElement("button");
+
+                    deleteButton.className = "delete";
+                    deleteButton.textContent = "削除";
+
+                    deleteButton.addEventListener(
+                        "click",
+                        function() {
+                            deleteBonus(item.id);
+                        }
+                    );
+
+                    actionDiv.appendChild(editButton);
+                    actionDiv.appendChild(deleteButton);
+                    actionTd.appendChild(actionDiv);
+                    tr.appendChild(actionTd);
 
                     tbody.appendChild(tr);
 
@@ -3151,7 +3418,6 @@ function getSalaryDeductions(item) {
 
     }
 
-
     return (
 
         Number(item.healthInsurance) +
@@ -3174,7 +3440,6 @@ function getSalaryNet(item) {
         ) || 0;
 
     }
-
 
     return (
         getSalaryGross(item) -
@@ -3203,7 +3468,6 @@ function getBonusDeductions(item) {
 
     }
 
-
     return (
 
         Number(item.healthInsurance) +
@@ -3226,7 +3490,6 @@ function getBonusNet(item) {
 
     }
 
-
     return (
         getBonusGross(item) -
         getBonusDeductions(item)
@@ -3246,13 +3509,10 @@ function setupYearSelect() {
             "summaryYear"
         );
 
-
     select.innerHTML = "";
-
 
     const currentYear =
         new Date().getFullYear();
-
 
     for (
         let year = 2020;
@@ -3265,12 +3525,10 @@ function setupYearSelect() {
                 "option"
             );
 
-
         option.value = year;
 
         option.textContent =
             year + "年";
-
 
         if (year === currentYear) {
 
@@ -3278,11 +3536,9 @@ function setupYearSelect() {
 
         }
 
-
         select.appendChild(option);
 
     }
-
 
     select.addEventListener(
         "change",
@@ -3310,7 +3566,6 @@ function updateSummary() {
             ).value
         );
 
-
     getAll(
         "salaries",
         function(salaries) {
@@ -3332,7 +3587,6 @@ function updateSummary() {
                             }
                         );
 
-
                     const yearlyBonuses =
                         bonuses.filter(
                             function(item) {
@@ -3346,7 +3600,6 @@ function updateSummary() {
                             }
                         );
 
-
                     let salaryGross = 0;
                     let salaryNet = 0;
 
@@ -3359,25 +3612,16 @@ function updateSummary() {
                     let incomeTax = 0;
                     let residentTax = 0;
 
-
                     yearlySalaries.forEach(
                         function(item) {
 
                             salaryGross +=
-                                getSalaryGross(
-                                    item
-                                );
+                                getSalaryGross(item);
 
                             salaryNet +=
-                                getSalaryNet(
-                                    item
-                                );
+                                getSalaryNet(item);
 
-
-                            if (
-                                "employment"
-                                in item
-                            ) {
+                            if ("employment" in item) {
 
                                 employment +=
                                     Number(
@@ -3435,26 +3679,17 @@ function updateSummary() {
 
                         }
                     );
-
 
                     yearlyBonuses.forEach(
                         function(item) {
 
                             bonusGross +=
-                                getBonusGross(
-                                    item
-                                );
+                                getBonusGross(item);
 
                             bonusNet +=
-                                getBonusNet(
-                                    item
-                                );
+                                getBonusNet(item);
 
-
-                            if (
-                                "employment"
-                                in item
-                            ) {
+                            if ("employment" in item) {
 
                                 employment +=
                                     Number(
@@ -3502,19 +3737,16 @@ function updateSummary() {
 
                         }
                     );
-
 
                     document.getElementById(
                         "yearSalaryGross"
                     ).textContent =
                         yen(salaryGross);
 
-
                     document.getElementById(
                         "yearSalaryNet"
                     ).textContent =
                         yen(salaryNet);
-
 
                     document.getElementById(
                         "yearSalaryCount"
@@ -3522,18 +3754,15 @@ function updateSummary() {
                         yearlySalaries.length +
                         "か月";
 
-
                     document.getElementById(
                         "yearBonusGross"
                     ).textContent =
                         yen(bonusGross);
 
-
                     document.getElementById(
                         "yearBonusNet"
                     ).textContent =
                         yen(bonusNet);
-
 
                     document.getElementById(
                         "yearTotalGross"
@@ -3543,7 +3772,6 @@ function updateSummary() {
                             bonusGross
                         );
 
-
                     document.getElementById(
                         "yearTotalNet"
                     ).textContent =
@@ -3552,30 +3780,25 @@ function updateSummary() {
                             bonusNet
                         );
 
-
                     document.getElementById(
                         "yearEmployment"
                     ).textContent =
                         yen(employment);
-
 
                     document.getElementById(
                         "yearHealth"
                     ).textContent =
                         yen(health);
 
-
                     document.getElementById(
                         "yearPension"
                     ).textContent =
                         yen(pension);
 
-
                     document.getElementById(
                         "yearIncomeTax"
                     ).textContent =
                         yen(incomeTax);
-
 
                     document.getElementById(
                         "yearResidentTax"
@@ -3604,7 +3827,6 @@ function loadChart() {
             ).value
         );
 
-
     getAll(
         "salaries",
         function(salaries) {
@@ -3625,24 +3847,17 @@ function loadChart() {
                     const bonusNet =
                         Array(12).fill(0);
 
-
                     salaries.forEach(
                         function(item) {
 
                             if (
-                                getYear(
-                                    item.date
-                                ) !== year
+                                getYear(item.date) !== year
                             ) {
                                 return;
                             }
 
-
                             const month =
-                                getMonth(
-                                    item.date
-                                );
-
+                                getMonth(item.date);
 
                             if (
                                 month >= 1 &&
@@ -3652,40 +3867,29 @@ function loadChart() {
                                 salaryGross[
                                     month - 1
                                 ] +=
-                                    getSalaryGross(
-                                        item
-                                    );
+                                    getSalaryGross(item);
 
                                 salaryNet[
                                     month - 1
                                 ] +=
-                                    getSalaryNet(
-                                        item
-                                    );
+                                    getSalaryNet(item);
 
                             }
 
                         }
                     );
 
-
                     bonuses.forEach(
                         function(item) {
 
                             if (
-                                getYear(
-                                    item.date
-                                ) !== year
+                                getYear(item.date) !== year
                             ) {
                                 return;
                             }
 
-
                             const month =
-                                getMonth(
-                                    item.date
-                                );
-
+                                getMonth(item.date);
 
                             if (
                                 month >= 1 &&
@@ -3695,22 +3899,17 @@ function loadChart() {
                                 bonusGross[
                                     month - 1
                                 ] +=
-                                    getBonusGross(
-                                        item
-                                    );
+                                    getBonusGross(item);
 
                                 bonusNet[
                                     month - 1
                                 ] +=
-                                    getBonusNet(
-                                        item
-                                    );
+                                    getBonusNet(item);
 
                             }
 
                         }
                     );
-
 
                     drawChart(
                         salaryGross,
@@ -3747,13 +3946,16 @@ function drawChart(
     const ctx =
         canvas.getContext("2d");
 
+    /*
+     * 内部描画サイズは1000x400を維持。
+     * CSS側でスマホ画面に縮小表示します。
+     */
 
     const width =
         canvas.width;
 
     const height =
         canvas.height;
-
 
     ctx.clearRect(
         0,
@@ -3762,24 +3964,20 @@ function drawChart(
         height
     );
 
-
     const marginLeft = 70;
     const marginRight = 30;
     const marginTop = 30;
     const marginBottom = 55;
-
 
     const chartWidth =
         width -
         marginLeft -
         marginRight;
 
-
     const chartHeight =
         height -
         marginTop -
         marginBottom;
-
 
     const allValues = [
 
@@ -3790,31 +3988,25 @@ function drawChart(
 
     ];
 
-
     let maxValue =
         Math.max(
             ...allValues
         );
 
-
     if (maxValue <= 0) {
         maxValue = 100000;
     }
-
 
     maxValue =
         Math.ceil(
             maxValue / 100000
         ) * 100000;
 
-
     ctx.strokeStyle = "#dddddd";
     ctx.fillStyle = "#555";
     ctx.lineWidth = 1;
 
-
     const gridCount = 5;
-
 
     for (
         let i = 0;
@@ -3831,7 +4023,6 @@ function drawChart(
                 gridCount
             );
 
-
         ctx.beginPath();
 
         ctx.moveTo(
@@ -3846,17 +4037,14 @@ function drawChart(
 
         ctx.stroke();
 
-
         const value =
             maxValue *
             i /
             gridCount;
 
-
         ctx.textAlign = "right";
         ctx.textBaseline = "middle";
         ctx.font = "12px Arial";
-
 
         ctx.fillText(
             Math.round(
@@ -3868,9 +4056,7 @@ function drawChart(
 
     }
 
-
     ctx.strokeStyle = "#999";
-
 
     ctx.beginPath();
 
@@ -3891,7 +4077,6 @@ function drawChart(
 
     ctx.stroke();
 
-
     function xPosition(index) {
 
         return (
@@ -3902,7 +4087,6 @@ function drawChart(
         );
 
     }
-
 
     function yPosition(value) {
 
@@ -3918,12 +4102,10 @@ function drawChart(
 
     }
 
-
     ctx.fillStyle = "#444";
     ctx.textAlign = "center";
     ctx.textBaseline = "top";
     ctx.font = "13px Arial";
-
 
     for (
         let i = 0;
@@ -3941,11 +4123,9 @@ function drawChart(
 
     }
 
-
     function drawLine(data) {
 
         ctx.beginPath();
-
 
         data.forEach(
             function(value, index) {
@@ -3955,7 +4135,6 @@ function drawChart(
 
                 const y =
                     yPosition(value);
-
 
                 if (index === 0) {
 
@@ -3976,9 +4155,7 @@ function drawChart(
             }
         );
 
-
         ctx.stroke();
-
 
         data.forEach(
             function(value, index) {
@@ -3988,7 +4165,6 @@ function drawChart(
 
                 const y =
                     yPosition(value);
-
 
                 ctx.beginPath();
 
@@ -4007,29 +4183,23 @@ function drawChart(
 
     }
 
-
     ctx.lineWidth = 2;
-
 
     ctx.strokeStyle = "#333";
     ctx.fillStyle = "#333";
     drawLine(salaryGross);
 
-
     ctx.strokeStyle = "#666";
     ctx.fillStyle = "#666";
     drawLine(salaryNet);
-
 
     ctx.strokeStyle = "#999";
     ctx.fillStyle = "#999";
     drawLine(bonusGross);
 
-
     ctx.strokeStyle = "#bbb";
     ctx.fillStyle = "#bbb";
     drawLine(bonusNet);
-
 
     /* 凡例 */
 
@@ -4038,7 +4208,6 @@ function drawChart(
     ctx.font = "13px Arial";
     ctx.textAlign = "left";
     ctx.textBaseline = "middle";
-
 
     const legends = [
 
@@ -4049,17 +4218,14 @@ function drawChart(
 
     ];
 
-
     let legendX =
         marginLeft;
-
 
     legends.forEach(
         function(legend) {
 
             ctx.fillStyle =
                 legend[1];
-
 
             ctx.fillRect(
                 legendX,
@@ -4068,17 +4234,14 @@ function drawChart(
                 3
             );
 
-
             ctx.fillStyle =
                 "#333";
-
 
             ctx.fillText(
                 legend[0],
                 legendX + 32,
                 legendY
             );
-
 
             legendX += 130;
 
@@ -4126,14 +4289,12 @@ document.getElementById(
 
                         };
 
-
                         const json =
                             JSON.stringify(
                                 backup,
                                 null,
                                 2
                             );
-
 
                         const blob =
                             new Blob(
@@ -4144,22 +4305,18 @@ document.getElementById(
                                 }
                             );
 
-
                         const url =
                             URL.createObjectURL(
                                 blob
                             );
-
 
                         const a =
                             document.createElement(
                                 "a"
                             );
 
-
                         const date =
                             new Date();
-
 
                         const filename =
                             "salary-backup-" +
@@ -4174,11 +4331,9 @@ document.getElementById(
                             ).padStart(2, "0") +
                             ".json";
 
-
                         a.href = url;
                         a.download =
                             filename;
-
 
                         document.body.appendChild(a);
 
@@ -4186,11 +4341,9 @@ document.getElementById(
 
                         document.body.removeChild(a);
 
-
                         URL.revokeObjectURL(
                             url
                         );
-
 
                         alert(
                             "データをバックアップしました。"
@@ -4233,15 +4386,12 @@ document.getElementById(
         const file =
             event.target.files[0];
 
-
         if (!file) {
             return;
         }
 
-
         const reader =
             new FileReader();
-
 
         reader.onload =
             function(e) {
@@ -4253,9 +4403,7 @@ document.getElementById(
                             e.target.result
                         );
 
-
                     restoreData(data);
-
 
                 } catch (error) {
 
@@ -4266,11 +4414,9 @@ document.getElementById(
 
                 }
 
-
                 event.target.value = "";
 
             };
-
 
         reader.readAsText(file);
 
@@ -4296,7 +4442,6 @@ function restoreData(data) {
         return;
     }
 
-
     if (
         !Array.isArray(data.salaries) ||
         !Array.isArray(data.bonuses)
@@ -4309,7 +4454,6 @@ function restoreData(data) {
         return;
     }
 
-
     const firstConfirm =
         confirm(
             "現在保存されている給与・賞与データを\n" +
@@ -4317,11 +4461,9 @@ function restoreData(data) {
             "続行しますか？"
         );
 
-
     if (!firstConfirm) {
         return;
     }
-
 
     const secondConfirm =
         confirm(
@@ -4329,18 +4471,15 @@ function restoreData(data) {
             "現在のデータは削除されます。"
         );
 
-
     if (!secondConfirm) {
         return;
     }
-
 
     const transaction =
         db.transaction(
             ["salaries", "bonuses"],
             "readwrite"
         );
-
 
     const salaryStore =
         transaction.objectStore(
@@ -4352,10 +4491,8 @@ function restoreData(data) {
             "bonuses"
         );
 
-
     salaryStore.clear();
     bonusStore.clear();
-
 
     data.salaries.forEach(
         function(item) {
@@ -4366,9 +4503,7 @@ function restoreData(data) {
                     item
                 );
 
-
             delete copy.id;
-
 
             salaryStore.add(
                 copy
@@ -4376,7 +4511,6 @@ function restoreData(data) {
 
         }
     );
-
 
     data.bonuses.forEach(
         function(item) {
@@ -4387,9 +4521,7 @@ function restoreData(data) {
                     item
                 );
 
-
             delete copy.id;
-
 
             bonusStore.add(
                 copy
@@ -4398,14 +4530,12 @@ function restoreData(data) {
         }
     );
 
-
     transaction.oncomplete =
         function() {
 
             alert(
                 "データを復元しました。"
             );
-
 
             resetSalaryForm();
             resetBonusForm();
@@ -4418,14 +4548,12 @@ function restoreData(data) {
 
         };
 
-
     transaction.onerror =
         function(event) {
 
             alert(
                 "データの復元中にエラーが発生しました。"
             );
-
 
             console.error(
                 event.target.error
