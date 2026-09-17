@@ -3,9 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>自分データベース</title>
 
   <style>
+
     * {
       box-sizing: border-box;
     }
@@ -18,9 +20,11 @@
         "Segoe UI",
         "Noto Sans JP",
         sans-serif;
+
       background: #f5f6f8;
       color: #333;
     }
+
 
     /* =========================
        ヘッダー
@@ -50,6 +54,7 @@
       font-size: 14px;
     }
 
+
     /* =========================
        ナビゲーション
     ========================= */
@@ -58,34 +63,52 @@
       position: sticky;
       top: 0;
       z-index: 100;
+
       background: #ffffff;
       border-bottom: 1px solid #ddd;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+
+      box-shadow:
+        0 2px 6px rgba(0, 0, 0, 0.05);
     }
 
     .nav-inner {
       max-width: 1100px;
       margin: 0 auto;
+
       display: flex;
       gap: 6px;
+
       overflow-x: auto;
+
       padding: 8px 12px;
     }
 
     .nav button {
       border: none;
       background: transparent;
+
       padding: 10px 16px;
+
       border-radius: 8px;
+
       font-size: 14px;
+
       white-space: nowrap;
+
       cursor: pointer;
+
       color: #555;
+
+      transition:
+        background 0.15s ease,
+        color 0.15s ease;
     }
 
     .nav button:hover {
       background: #f0f1f3;
+      color: #222;
     }
+
 
     /* =========================
        メイン
@@ -93,9 +116,19 @@
 
     .container {
       max-width: 1100px;
+
       margin: 0 auto;
-      padding: 32px 20px 60px;
+
+      padding:
+        32px
+        20px
+        60px;
     }
+
+
+    /* =========================
+       ウェルカム
+    ========================= */
 
     .welcome {
       margin-bottom: 24px;
@@ -103,14 +136,18 @@
 
     .welcome h2 {
       margin: 0 0 8px;
+
       font-size: 22px;
     }
 
     .welcome p {
       margin: 0;
+
       color: #777;
+
       font-size: 14px;
     }
+
 
     /* =========================
        カード
@@ -118,17 +155,26 @@
 
     .card-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+
+      grid-template-columns:
+        repeat(2, 1fr);
+
       gap: 16px;
     }
 
     .card {
       background: #ffffff;
+
       border: 1px solid #e1e3e6;
+
       border-radius: 14px;
+
       padding: 24px;
-      min-height: 165px;
+
+      min-height: 190px;
+
       cursor: pointer;
+
       transition:
         transform 0.15s ease,
         box-shadow 0.15s ease;
@@ -136,126 +182,43 @@
 
     .card:hover {
       transform: translateY(-2px);
-      box-shadow: 0 5px 16px rgba(0, 0, 0, 0.08);
+
+      box-shadow:
+        0 5px 16px rgba(0, 0, 0, 0.08);
     }
 
+
     /* =========================
-       アイコン
+       いらすとやアイコン
     ========================= */
 
     .icon {
-      width: 52px;
-      height: 52px;
-      border-radius: 14px;
-      background: #f0f1f3;
+      width: 72px;
+      height: 72px;
+
       margin-bottom: 15px;
-      position: relative;
+
       display: flex;
+
       align-items: center;
       justify-content: center;
+
+      overflow: hidden;
+
+      border-radius: 12px;
+
+      background: #f0f1f3;
     }
 
-    /*
-      プロフィール
-      人型アイコン
-    */
+    .icon img {
+      width: 100%;
+      height: 100%;
 
-    .icon-profile::before {
-      content: "";
-      width: 15px;
-      height: 15px;
-      background: #555;
-      border-radius: 50%;
-      position: absolute;
-      top: 9px;
+      object-fit: contain;
+
+      display: block;
     }
 
-    .icon-profile::after {
-      content: "";
-      width: 27px;
-      height: 14px;
-      background: #555;
-      border-radius: 15px 15px 8px 8px;
-      position: absolute;
-      bottom: 9px;
-    }
-
-    /*
-      お金
-      円マーク風
-    */
-
-    .icon-money::before {
-      content: "$00A5";
-      font-size: 27px;
-      font-weight: 700;
-      color: #555;
-      line-height: 1;
-    }
-
-    /*
-      健康
-      ハート
-    */
-
-    .icon-health::before {
-      content: "$2665";
-      font-size: 29px;
-      color: #d9534f;
-      line-height: 1;
-    }
-
-    /*
-      資格
-      本・証明書風
-    */
-
-    .icon-qualification::before {
-      content: "";
-      width: 29px;
-      height: 22px;
-      border: 3px solid #555;
-      border-radius: 3px;
-      position: absolute;
-    }
-
-    .icon-qualification::after {
-      content: "";
-      width: 3px;
-      height: 24px;
-      background: #555;
-      position: absolute;
-    }
-
-    /*
-      家族
-      複数人を表現
-    */
-
-    .icon-family::before {
-      content: "";
-      width: 12px;
-      height: 12px;
-      background: #555;
-      border-radius: 50%;
-      position: absolute;
-      top: 8px;
-      left: 19px;
-      box-shadow:
-        -14px 7px 0 -2px #777,
-        14px 7px 0 -2px #777;
-    }
-
-    .icon-family::after {
-      content: "";
-      width: 30px;
-      height: 13px;
-      background: #555;
-      border-radius: 15px 15px 5px 5px;
-      position: absolute;
-      bottom: 8px;
-      left: 11px;
-    }
 
     /* =========================
        カード文字
@@ -263,21 +226,28 @@
 
     .card-title {
       font-size: 18px;
+
       font-weight: 700;
+
       margin-bottom: 7px;
     }
 
     .card-description {
       font-size: 13px;
+
       color: #777;
+
       line-height: 1.7;
     }
 
     .card-arrow {
       margin-top: 14px;
+
       font-size: 13px;
+
       color: #888;
     }
+
 
     /* =========================
        下部説明
@@ -285,23 +255,49 @@
 
     .info-box {
       margin-top: 28px;
+
       background: #ffffff;
+
       border: 1px solid #e1e3e6;
+
       border-radius: 14px;
+
       padding: 20px;
     }
 
     .info-box h3 {
       margin: 0 0 8px;
+
       font-size: 16px;
     }
 
     .info-box p {
       margin: 0;
+
       color: #777;
+
       font-size: 13px;
+
       line-height: 1.7;
     }
+
+
+    /* =========================
+       フッター
+    ========================= */
+
+    .footer {
+      margin-top: 20px;
+
+      text-align: center;
+
+      color: #999;
+
+      font-size: 11px;
+
+      line-height: 1.6;
+    }
+
 
     /* =========================
        スマホ
@@ -318,34 +314,58 @@
       }
 
       .container {
-        padding: 24px 14px 50px;
+        padding:
+          24px
+          14px
+          50px;
       }
 
       .card-grid {
         grid-template-columns: 1fr;
+
         gap: 12px;
       }
 
       .card {
         min-height: auto;
+
         padding: 20px;
       }
+
+      .icon {
+        width: 64px;
+        height: 64px;
+      }
+
     }
+
   </style>
 </head>
 
+
 <body>
+
 
   <!-- =========================
        ヘッダー
   ========================= -->
 
   <header class="header">
+
     <div class="header-inner">
-      <h1>自分データベース</h1>
-      <p>自分に関する情報をまとめて管理</p>
+
+      <h1>
+        自分データベース
+      </h1>
+
+      <p>
+        自分に関する情報をまとめて管理
+      </p>
+
     </div>
+
   </header>
+
 
 
   <!-- =========================
@@ -353,6 +373,7 @@
   ========================= -->
 
   <nav class="nav">
+
     <div class="nav-inner">
 
       <button onclick="openSection('profile')">
@@ -376,7 +397,9 @@
       </button>
 
     </div>
+
   </nav>
+
 
 
   <!-- =========================
@@ -385,29 +408,55 @@
 
   <main class="container">
 
+
     <div class="welcome">
-      <h2>マイデータ</h2>
-      <p>管理したい情報を選択してください。</p>
+
+      <h2>
+        マイデータ
+      </h2>
+
+      <p>
+        管理したい情報を選択してください。
+      </p>
+
     </div>
+
 
 
     <div class="card-grid">
 
 
-      <!-- プロフィール -->
+      <!-- =========================
+           プロフィール
+      ========================= -->
 
-      <div class="card" onclick="openSection('profile')">
+      <div
+        class="card"
+        onclick="openSection('profile')"
+      >
 
-        <div class="icon icon-profile"></div>
+        <div class="icon">
+
+          <img
+            src="images/profile.png"
+            alt="プロフィール"
+          >
+
+        </div>
+
 
         <div class="card-title">
           プロフィール
         </div>
 
+
         <div class="card-description">
+
           基本情報・血液型・MBTIなど、
           自分自身の基本情報を管理します。
+
         </div>
+
 
         <div class="card-arrow">
           詳細を見る →
@@ -416,20 +465,38 @@
       </div>
 
 
-      <!-- お金 -->
 
-      <div class="card" onclick="openSection('money')">
+      <!-- =========================
+           お金
+      ========================= -->
 
-        <div class="icon icon-money"></div>
+      <div
+        class="card"
+        onclick="openSection('money')"
+      >
+
+        <div class="icon">
+
+          <img
+            src="images/money.png"
+            alt="お金"
+          >
+
+        </div>
+
 
         <div class="card-title">
           お金
         </div>
 
+
         <div class="card-description">
+
           給与・賞与・源泉徴収票など、
           お金に関する情報を管理します。
+
         </div>
+
 
         <div class="card-arrow">
           詳細を見る →
@@ -438,20 +505,38 @@
       </div>
 
 
-      <!-- 健康 -->
 
-      <div class="card" onclick="openSection('health')">
+      <!-- =========================
+           健康
+      ========================= -->
 
-        <div class="icon icon-health"></div>
+      <div
+        class="card"
+        onclick="openSection('health')"
+      >
+
+        <div class="icon">
+
+          <img
+            src="images/health.png"
+            alt="健康"
+          >
+
+        </div>
+
 
         <div class="card-title">
           健康
         </div>
 
+
         <div class="card-description">
+
           健康診断・身体測定など、
           健康に関する情報を管理します。
+
         </div>
+
 
         <div class="card-arrow">
           詳細を見る →
@@ -460,20 +545,38 @@
       </div>
 
 
-      <!-- 資格 -->
 
-      <div class="card" onclick="openSection('qualification')">
+      <!-- =========================
+           資格
+      ========================= -->
 
-        <div class="icon icon-qualification"></div>
+      <div
+        class="card"
+        onclick="openSection('qualification')"
+      >
+
+        <div class="icon">
+
+          <img
+            src="images/qualification.png"
+            alt="資格"
+          >
+
+        </div>
+
 
         <div class="card-title">
           資格
         </div>
 
+
         <div class="card-description">
+
           保有資格・取得日・取得時の年齢などを
           管理します。
+
         </div>
+
 
         <div class="card-arrow">
           詳細を見る →
@@ -482,20 +585,38 @@
       </div>
 
 
-      <!-- 家族 -->
 
-      <div class="card" onclick="openSection('family')">
+      <!-- =========================
+           家族
+      ========================= -->
 
-        <div class="icon icon-family"></div>
+      <div
+        class="card"
+        onclick="openSection('family')"
+      >
+
+        <div class="icon">
+
+          <img
+            src="images/family.png"
+            alt="家族"
+          >
+
+        </div>
+
 
         <div class="card-title">
           家族
         </div>
 
+
         <div class="card-description">
+
           親・兄弟、配偶者、子供の情報を
           管理します。
+
         </div>
+
 
         <div class="card-arrow">
           詳細を見る →
@@ -503,7 +624,9 @@
 
       </div>
 
+
     </div>
+
 
 
     <!-- =========================
@@ -512,7 +635,9 @@
 
     <div class="info-box">
 
-      <h3>このアプリについて</h3>
+      <h3>
+        このアプリについて
+      </h3>
 
       <p>
         このアプリは、自分自身や家族に関する情報を
@@ -522,44 +647,64 @@
 
     </div>
 
+
+
+    <!-- =========================
+         フッター
+    ========================= -->
+
+    <div class="footer">
+
+      イラスト素材：いらすとや
+
+    </div>
+
+
   </main>
+
 
 
   <!-- =========================
        JavaScript
   ========================= -->
 
-
   <script>
 
-  function openSection(section) {
+    function openSection(section) {
 
-    if (section === "profile") {
+      if (section === "profile") {
 
-      alert("プロフィール機能はこれから作ります。");
+        alert("プロフィール機能はこれから作ります。");
 
-    } else if (section === "money") {
+      }
 
-      window.location.href = "money.html";
+      else if (section === "money") {
 
-    } else if (section === "health") {
+        window.location.href = "money.html";
 
-      alert("健康機能はこれから作ります。");
+      }
 
-    } else if (section === "qualification") {
+      else if (section === "health") {
 
-      alert("資格機能はこれから作ります。");
+        alert("健康機能はこれから作ります。");
 
-    } else if (section === "family") {
+      }
 
-      alert("家族機能はこれから作ります。");
+      else if (section === "qualification") {
+
+        alert("資格機能はこれから作ります。");
+
+      }
+
+      else if (section === "family") {
+
+        alert("家族機能はこれから作ります。");
+
+      }
 
     }
 
-  }
-
   </script>
-
 
 
 </body>
