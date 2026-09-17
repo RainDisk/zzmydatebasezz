@@ -1,0 +1,4463 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>給与管理アプリ</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo, sans-serif;
+    background: #f5f6f8;
+    color: #222;
+}
+
+/* =========================
+   レイアウト
+========================= */
+
+.app {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* サイドバー */
+
+.sidebar {
+    width: 230px;
+    background: #222;
+    color: white;
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    padding: 20px 12px;
+    overflow-y: auto;
+}
+
+.logo {
+    font-size: 21px;
+    font-weight: bold;
+    padding: 8px 10px 22px;
+}
+
+.back-link {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #bbb;
+    text-decoration: none;
+    font-size: 14px;
+    padding: 8px 10px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+}
+
+.back-link:hover {
+    background: #444;
+    color: white;
+}
+
+.mobile-back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: #ddd;
+    text-decoration: none;
+    font-size: 13px;
+    padding: 10px 15px 0;
+}
+
+.mobile-back-link:hover {
+    color: white;
+}
+
+.nav-button {
+    width: 100%;
+    display: block;
+    border: none;
+    background: transparent;
+    color: #ddd;
+    text-align: left;
+    padding: 13px 12px;
+    margin-bottom: 4px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.nav-button:hover {
+    background: #444;
+    color: white;
+}
+
+.nav-button.active {
+    background: #555;
+    color: white;
+    font-weight: bold;
+}
+
+/* メイン */
+
+.main {
+    margin-left: 230px;
+    width: calc(100% - 230px);
+    min-height: 100vh;
+}
+
+.topbar {
+    display: none;
+}
+
+.content {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 25px;
+}
+
+.page {
+    display: none;
+}
+
+.page.active {
+    display: block;
+}
+
+.page-title {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 28px;
+}
+
+/* =========================
+   カード
+========================= */
+
+.card {
+    background: white;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 1px 5px rgba(0,0,0,0.08);
+}
+
+.card h2 {
+    margin-top: 0;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #333;
+}
+
+/* =========================
+   フォーム
+========================= */
+
+.form-row {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+label {
+    font-weight: bold;
+}
+
+input,
+select,
+button {
+    font-size: 16px;
+}
+
+input,
+select {
+    width: 100%;
+    padding: 9px;
+    border: 1px solid #bbb;
+    border-radius: 5px;
+}
+
+input[readonly] {
+    background: #eee;
+}
+
+.amount-input {
+    text-align: right;
+}
+
+/* =========================
+   支給・控除
+========================= */
+
+.item-group {
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.item-group-title {
+    font-weight: bold;
+    font-size: 18px;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #ddd;
+}
+
+.total-box {
+    background: #f0f7ff;
+    border: 1px solid #b8d5f0;
+    border-radius: 6px;
+    padding: 15px;
+    margin-top: 10px;
+}
+
+.total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 6px 0;
+}
+
+.total-row + .total-row {
+    border-top: 1px solid #ddd;
+}
+
+/* =========================
+   ボタン
+========================= */
+
+.button-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 15px;
+}
+
+button {
+    padding: 9px 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background: #333;
+    color: white;
+}
+
+button:hover {
+    opacity: 0.85;
+}
+
+button.cancel {
+    background: #777;
+}
+
+button.delete {
+    background: #b00020;
+}
+
+button.edit {
+    background: #555;
+}
+
+.message {
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+/* =========================
+   テーブル
+========================= */
+
+.table-wrapper {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 850px;
+}
+
+th,
+td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: right;
+    white-space: nowrap;
+}
+
+th {
+    background: #eee;
+}
+
+th:first-child,
+td:first-child {
+    text-align: center;
+}
+
+td:last-child {
+    text-align: center;
+}
+
+/* =========================
+   年間集計
+========================= */
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.summary-card {
+    border: 1px solid #ddd;
+    padding: 12px;
+    border-radius: 6px;
+    background: #fafafa;
+}
+
+.summary-label {
+    font-size: 14px;
+    color: #555;
+}
+
+.summary-value {
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 5px;
+}
+
+/* =========================
+   トップページ
+========================= */
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.dashboard-card {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 1px 5px rgba(0,0,0,0.08);
+}
+
+.dashboard-card-title {
+    color: #666;
+    font-size: 14px;
+}
+
+.dashboard-card-value {
+    font-size: 27px;
+    font-weight: bold;
+    margin-top: 8px;
+}
+
+/* =========================
+   グラフ
+========================= */
+
+.chart-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+canvas {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: 400px;
+    border: 1px solid #ddd;
+    background: white;
+}
+
+/* =========================
+   その他
+========================= */
+
+.help-text {
+    color: #666;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.backup-area {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* =========================
+   スマホ
+========================= */
+
+@media (max-width: 700px) {
+
+    .app {
+        display: block;
+    }
+
+    .sidebar {
+        display: none;
+    }
+
+    .main {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .topbar {
+        display: block;
+        background: #222;
+        color: white;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
+
+    .mobile-title {
+        padding: 12px 15px 8px;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .mobile-nav {
+        display: flex;
+        overflow-x: auto;
+        gap: 5px;
+        padding: 5px 10px 10px;
+    }
+
+    .mobile-nav .nav-button {
+        width: auto;
+        flex-shrink: 0;
+        margin: 0;
+        padding: 8px 12px;
+        white-space: nowrap;
+        font-size: 14px;
+    }
+
+    .content {
+        padding: 15px 10px;
+    }
+
+    .page-title {
+        font-size: 24px;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 4px;
+    }
+
+    .summary-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+
+    canvas {
+        min-width: 800px;
+    }
+
+    .chart-wrapper {
+        overflow-x: auto;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- =========================
+         PCサイドバー
+    ========================== -->
+
+    <aside class="sidebar">
+
+        <a href="index.html" class="back-link">
+            ← トップへ戻る
+        </a>
+
+        <div class="logo">
+            給与管理
+        </div>
+
+        <button class="nav-button active" data-page="dashboard">
+            年間データ
+        </button>
+
+        <button class="nav-button" data-page="salary-register">
+            給与登録
+        </button>
+
+        <button class="nav-button" data-page="bonus-register">
+            賞与登録
+        </button>
+
+        <button class="nav-button" data-page="salary-history">
+            給与履歴
+        </button>
+
+        <button class="nav-button" data-page="bonus-history">
+            賞与履歴
+        </button>
+
+        <button class="nav-button" data-page="backup">
+            データバックアップ
+        </button>
+
+        <button class="nav-button" data-page="restore">
+            データ復元
+        </button>
+
+    </aside>
+
+
+    <!-- =========================
+         スマホ用トップメニュー
+    ========================== -->
+
+    <div class="main">
+
+        <div class="topbar">
+
+            <a href="index.html" class="mobile-back-link">
+                ← トップへ戻る
+            </a>
+
+            <div class="mobile-title">
+                給与管理
+            </div>
+
+            <div class="mobile-nav">
+
+                <button class="nav-button active" data-page="dashboard">
+                    年間データ
+                </button>
+
+                <button class="nav-button" data-page="salary-register">
+                    給与登録
+                </button>
+
+                <button class="nav-button" data-page="bonus-register">
+                    賞与登録
+                </button>
+
+                <button class="nav-button" data-page="salary-history">
+                    給与履歴
+                </button>
+
+                <button class="nav-button" data-page="bonus-history">
+                    賞与履歴
+                </button>
+
+                <button class="nav-button" data-page="backup">
+                    バックアップ
+                </button>
+
+                <button class="nav-button" data-page="restore">
+                    復元
+                </button>
+
+            </div>
+        </div>
+
+
+        <main class="content">
+
+
+            <!-- =====================================================
+                 年間データ
+            ====================================================== -->
+
+            <div class="page active" id="page-dashboard">
+
+                <h1 class="page-title">年間データ</h1>
+
+                <div class="card">
+
+                    <div class="form-row">
+                        <label for="summaryYear">
+                            対象年
+                        </label>
+
+                        <select id="summaryYear"></select>
+                    </div>
+
+                </div>
+
+
+                <div class="dashboard-grid">
+
+                    <div class="dashboard-card">
+                        <div class="dashboard-card-title">
+                            給与総支給
+                        </div>
+                        <div class="dashboard-card-value"
+                             id="yearSalaryGross">
+                            0円
+                        </div>
+                    </div>
+
+                    <div class="dashboard-card">
+                        <div class="dashboard-card-title">
+                            給与手取り
+                        </div>
+                        <div class="dashboard-card-value"
+                             id="yearSalaryNet">
+                            0円
+                        </div>
+                    </div>
+
+                    <div class="dashboard-card">
+                        <div class="dashboard-card-title">
+                            賞与総支給
+                        </div>
+                        <div class="dashboard-card-value"
+                             id="yearBonusGross">
+                            0円
+                        </div>
+                    </div>
+
+                    <div class="dashboard-card">
+                        <div class="dashboard-card-title">
+                            賞与手取り
+                        </div>
+                        <div class="dashboard-card-value"
+                             id="yearBonusNet">
+                            0円
+                        </div>
+                    </div>
+
+                    <div class="dashboard-card">
+                        <div class="dashboard-card-title">
+                            年間総支給
+                        </div>
+                        <div class="dashboard-card-value"
+                             id="yearTotalGross">
+                            0円
+                        </div>
+                    </div>
+
+                    <div class="dashboard-card">
+                        <div class="dashboard-card-title">
+                            年間手取り
+                        </div>
+                        <div class="dashboard-card-value"
+                             id="yearTotalNet">
+                            0円
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <div class="card">
+
+                    <h2>年間詳細</h2>
+
+                    <div class="summary-grid">
+
+                        <div class="summary-card">
+                            <div class="summary-label">
+                                給与登録月数
+                            </div>
+                            <div class="summary-value"
+                                 id="yearSalaryCount">
+                                0か月
+                            </div>
+                        </div>
+
+                        <div class="summary-card">
+                            <div class="summary-label">
+                                雇用保険
+                            </div>
+                            <div class="summary-value"
+                                 id="yearEmployment">
+                                0円
+                            </div>
+                        </div>
+
+                        <div class="summary-card">
+                            <div class="summary-label">
+                                健康保険
+                            </div>
+                            <div class="summary-value"
+                                 id="yearHealth">
+                                0円
+                            </div>
+                        </div>
+
+                        <div class="summary-card">
+                            <div class="summary-label">
+                                厚生年金
+                            </div>
+                            <div class="summary-value"
+                                 id="yearPension">
+                                0円
+                            </div>
+                        </div>
+
+                        <div class="summary-card">
+                            <div class="summary-label">
+                                所得税
+                            </div>
+                            <div class="summary-value"
+                                 id="yearIncomeTax">
+                                0円
+                            </div>
+                        </div>
+
+                        <div class="summary-card">
+                            <div class="summary-label">
+                                住民税
+                            </div>
+                            <div class="summary-value"
+                                 id="yearResidentTax">
+                                0円
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="card">
+
+                    <h2>月別推移</h2>
+
+                    <div class="chart-wrapper">
+                        <canvas id="chart"
+                                width="1000"
+                                height="400"></canvas>
+                    </div>
+
+                    <div class="help-text">
+                        給与・賞与の総支給額と手取り額を月別に表示します。
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =====================================================
+                 給与登録
+            ====================================================== -->
+
+            <div class="page" id="page-salary-register">
+
+                <h1 class="page-title">給与登録</h1>
+
+                <div class="card">
+
+                    <form id="salaryForm">
+
+                        <div class="form-row">
+                            <label for="salaryDate">
+                                支給日
+                            </label>
+
+                            <input type="date"
+                                   id="salaryDate"
+                                   required>
+                        </div>
+
+
+                        <!-- 支給 -->
+
+                        <div class="item-group">
+
+                            <div class="item-group-title">
+                                支給
+                            </div>
+
+                            <div class="form-row">
+                                <label for="salaryBase">
+                                    基本給
+                                </label>
+
+                                <input type="number"
+                                       id="salaryBase"
+                                       class="amount-input"
+                                       value="337000"
+                                       step="1">
+                            </div>
+
+                            <div class="form-row">
+                                <label for="salaryAdjustment">
+                                    調整給
+                                </label>
+
+                                <input type="number"
+                                       id="salaryAdjustment"
+                                       class="amount-input"
+                                       value="29600"
+                                       step="1">
+                            </div>
+
+                            <div class="form-row">
+                                <label for="salaryOvertime">
+                                    普通残業手当
+                                </label>
+
+                                <input type="number"
+                                       id="salaryOvertime"
+                                       class="amount-input"
+                                       placeholder="入力してください"
+                                       step="1">
+                            </div>
+
+                            <div class="form-row">
+                                <label for="salaryNightOvertime">
+                                    深夜残業手当
+                                </label>
+
+                                <input type="number"
+                                       id="salaryNightOvertime"
+                                       class="amount-input"
+                                       value="0"
+                                       step="1">
+                            </div>
+
+                            <div class="form-row">
+                                <label for="salaryCommuterPass">
+                                    通勤定期
+                                </label>
+
+                                <input type="number"
+                                       id="salaryCommuterPass"
+                                       class="amount-input"
+                                       value="0"
+                                       step="1">
+                            </div>
+
+                            <div class="form-row">
+                                <label for="salaryStockAllowance">
+                                    持株奨励金
+                                </label>
+
+                                <input type="number"
+                                       id="salaryStockAllowance"
+                                       class="amount-input"
+                                       value="600"
+                                       step="1">
+                            </div>
+
+
+                            <div class="total-box">
+
+                                <div class="total-row">
+                                    <span>総支給</span>
+
+                                    <span id="salaryGrossDisplay">
+                                        0円
+                                    </span>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- 控除 -->
+
+                        <div class="item-group">
+
+                            <div class="item-group-title">
+                                控除
+                            </div>
+
+                            <div class="form-row">
+                                <label for="salaryEmployment">
+                                    雇用保険料
+                                </label>
+
+                                <input type="number"
+                                       id="salaryEmployment"
+                                       class="amount-input"
+                                       value="0"
+                                       step="1">
+                            </div>
+
+                            <div class="form-row">
+                                <label for="salaryHealth">
+                                    健康保険料
+                                </label>
+
+                                <input type="number"
+                                       id="salaryHealth"
+                                       class="amount-input"
+                                       value="0"
+                                       step="1">
+                            </div>
+
+                            <div class="form-row">
+                                <label for="salaryPension">
+                                    厚生年金保険
+                                </label>
+
+                                <input type="number"
+                                       id="salaryPension"
+                                       class="amount-input"
+                                       value="0"
+                                       step="1">
+                            </div>
+
+                            <div class="form-row">
+                                <label for="salaryIncomeTax">
+                                    所得税
+                                </label>
+
+                                <input type="number"
+                                       id="salaryIncomeTax"
+                                       class="amount-input"
+                                       value="0"
+                                       step="1">
+                            </div>
+
+                            <div class="form-row">
+                                <label for="salaryResidentTax">
+                                    住民税
+                                </label>
+
+                                <input type="number"
+                                       id="salaryResidentTax"
+                                       class="amount-input"
+                                       value="0"
+                                       step="1">
+                            </div>
+
+                            <div class="form-row">
+                                <label for="salaryMutualAid">
+                                    共済会保険料
+                                </label>
+
+                                <input type="number"
+                                       id="salaryMutualAid"
+                                       class="amount-input"
+                                       value="350"
+                                       step="1">
+                            </div>
+
+                            <div class="form-row">
+                                <label for="salaryStock">
+                                    持株会
+                                </label>
+
+                                <input type="number"
+                                       id="salaryStock"
+                                       class="amount-input"
+                                       value="5600"
+                                       step="1">
+                            </div>
+
+                            <div class="form-row">
+                                <label for="salaryYearEndAdjustment">
+                                    年末調整
+                                </label>
+
+                                <input type="number"
+                                       id="salaryYearEndAdjustment"
+                                       class="amount-input"
+                                       placeholder="例：-12000"
+                                       step="1">
+                            </div>
+
+                            <div class="help-text">
+                                年末調整はマイナスの金額をそのまま入力できます。
+                            </div>
+
+
+                            <div class="total-box">
+
+                                <div class="total-row">
+                                    <span>控除合計</span>
+
+                                    <span id="salaryDeductionDisplay">
+                                        0円
+                                    </span>
+                                </div>
+
+                                <div class="total-row">
+                                    <span>差引支給額</span>
+
+                                    <span id="salaryNetDisplay">
+                                        0円
+                                    </span>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="button-row">
+
+                            <button type="submit"
+                                    id="salarySubmit">
+                                給与を登録
+                            </button>
+
+                            <button type="button"
+                                    id="salaryCancel"
+                                    class="cancel"
+                                    style="display:none;">
+                                編集をキャンセル
+                            </button>
+
+                        </div>
+
+                        <div id="salaryMessage"
+                             class="message"></div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+
+            <!-- =====================================================
+                 給与履歴
+            ====================================================== -->
+
+            <div class="page" id="page-salary-history">
+
+                <h1 class="page-title">給与履歴</h1>
+
+                <div class="card">
+
+                    <div class="table-wrapper">
+
+                        <table>
+
+                            <thead>
+                                <tr>
+                                    <th>支給日</th>
+                                    <th>総支給</th>
+                                    <th>控除合計</th>
+                                    <th>手取り</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="salaryList"></tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =====================================================
+                 賞与登録
+            ====================================================== -->
+
+            <div class="page" id="page-bonus-register">
+
+                <h1 class="page-title">賞与登録</h1>
+
+                <div class="card">
+
+                    <form id="bonusForm">
+
+                        <div class="form-row">
+                            <label for="bonusDate">
+                                支給日
+                            </label>
+
+                            <input type="date"
+                                   id="bonusDate"
+                                   required>
+                        </div>
+
+
+                        <!-- 支給 -->
+
+                        <div class="item-group">
+
+                            <div class="item-group-title">
+                                支給
+                            </div>
+
+                            <div class="form-row">
+                                <label for="bonusAmount">
+                                    賞与
+                                </label>
+
+                                <input type="number"
+                                       id="bonusAmount"
+                                       class="amount-input"
+                                       placeholder="入力してください"
+                                       step="1">
+                            </div>
+
+                            <div class="form-row">
+                                <label for="bonusAdjustment">
+                                    調整金
+                                </label>
+
+                                <input type="number"
+                                       id="bonusAdjustment"
+                                       class="amount-input"
+                                       value="0"
+                                       step="1">
+                            </div>
+
+                            <div class="form-row">
+                                <label for="bonusReduction">
+                                    減額金
+                                </label>
+
+                                <input type="number"
+                                       id="bonusReduction"
+                                       class="amount-input"
+                                       value="0"
+                                       step="1">
+                            </div>
+
+                            <div class="form-row">
+                                <label for="bonusStockAllowance">
+                                    持株奨励金
+                                </label>
+
+                                <input type="number"
+                                       id="bonusStockAllowance"
+                                       class="amount-input"
+                                       value="1800"
+                                       step="1">
+                            </div>
+
+
+                            <div class="total-box">
+
+                                <div class="total-row">
+                                    <span>総支給</span>
+
+                                    <span id="bonusGrossDisplay">
+                                        0円
+                                    </span>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- 控除 -->
+
+                        <div class="item-group">
+
+                            <div class="item-group-title">
+                                控除
+                            </div>
+
+                            <div class="form-row">
+                                <label for="bonusEmployment">
+                                    雇用保険
+                                </label>
+
+                                <input type="number"
+                                       id="bonusEmployment"
+                                       class="amount-input"
+                                       value="0"
+                                       step="1">
+                            </div>
+
+                            <div class="form-row">
+                                <label for="bonusHealth">
+                                    健康保険
+                                </label>
+
+                                <input type="number"
+                                       id="bonusHealth"
+                                       class="amount-input"
+                                       value="0"
+                                       step="1">
+                            </div>
+
+                            <div class="form-row">
+                                <label for="bonusCare">
+                                    介護保険
+                                </label>
+
+                                <input type="number"
+                                       id="bonusCare"
+                                       class="amount-input"
+                                       value="0"
+                                       step="1">
+                            </div>
+
+                            <div class="form-row">
+                                <label for="bonusPension">
+                                    厚生年金
+                                </label>
+
+                                <input type="number"
+                                       id="bonusPension"
+                                       class="amount-input"
+                                       value="0"
+                                       step="1">
+                            </div>
+
+                            <div class="form-row">
+                                <label for="bonusIncomeTax">
+                                    所得税
+                                </label>
+
+                                <input type="number"
+                                       id="bonusIncomeTax"
+                                       class="amount-input"
+                                       value="0"
+                                       step="1">
+                            </div>
+
+                            <div class="form-row">
+                                <label for="bonusMutualAid">
+                                    共済控除
+                                </label>
+
+                                <input type="number"
+                                       id="bonusMutualAid"
+                                       class="amount-input"
+                                       value="0"
+                                       step="1">
+                            </div>
+
+                            <div class="form-row">
+                                <label for="bonusStock">
+                                    持株会
+                                </label>
+
+                                <input type="number"
+                                       id="bonusStock"
+                                       class="amount-input"
+                                       value="16800"
+                                       step="1">
+                            </div>
+
+                            <div class="form-row">
+                                <label for="bonusSettlement">
+                                    その他清算
+                                </label>
+
+                                <input type="number"
+                                       id="bonusSettlement"
+                                       class="amount-input"
+                                       value="0"
+                                       step="1">
+                            </div>
+
+
+                            <div class="total-box">
+
+                                <div class="total-row">
+                                    <span>控除合計</span>
+
+                                    <span id="bonusDeductionDisplay">
+                                        0円
+                                    </span>
+                                </div>
+
+                                <div class="total-row">
+                                    <span>差引支給額</span>
+
+                                    <span id="bonusNetDisplay">
+                                        0円
+                                    </span>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="button-row">
+
+                            <button type="submit"
+                                    id="bonusSubmit">
+                                賞与を登録
+                            </button>
+
+                            <button type="button"
+                                    id="bonusCancel"
+                                    class="cancel"
+                                    style="display:none;">
+                                編集をキャンセル
+                            </button>
+
+                        </div>
+
+                        <div id="bonusMessage"
+                             class="message"></div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+
+            <!-- =====================================================
+                 賞与履歴
+            ====================================================== -->
+
+            <div class="page" id="page-bonus-history">
+
+                <h1 class="page-title">賞与履歴</h1>
+
+                <div class="card">
+
+                    <div class="table-wrapper">
+
+                        <table>
+
+                            <thead>
+                                <tr>
+                                    <th>支給日</th>
+                                    <th>総支給</th>
+                                    <th>控除合計</th>
+                                    <th>手取り</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="bonusList"></tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =====================================================
+                 バックアップ
+            ====================================================== -->
+
+            <div class="page" id="page-backup">
+
+                <h1 class="page-title">データバックアップ</h1>
+
+                <div class="card">
+
+                    <h2>データをバックアップ</h2>
+
+                    <p>
+                        現在保存されている給与・賞与データを
+                        JSONファイルとして保存します。
+                    </p>
+
+                    <button type="button"
+                            id="backupBtn">
+                        データをバックアップ
+                    </button>
+
+                    <div class="help-text">
+                        バックアップファイルには給与・賞与の個人情報が含まれます。
+                        他人に渡したり、公開場所へアップロードしないでください。
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =====================================================
+                 復元
+            ====================================================== -->
+
+            <div class="page" id="page-restore">
+
+                <h1 class="page-title">データ復元</h1>
+
+                <div class="card">
+
+                    <h2>データを復元</h2>
+
+                    <p>
+                        以前作成したバックアップJSONファイルから
+                        給与・賞与データを復元します。
+                    </p>
+
+                    <button type="button"
+                            id="restoreBtn">
+                        バックアップから復元
+                    </button>
+
+                    <input type="file"
+                           id="restoreFile"
+                           accept=".json,application/json"
+                           style="display:none;">
+
+                    <div class="help-text">
+                        復元すると、現在保存されている給与・賞与データは
+                        バックアップデータに置き換わります。
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </main>
+
+    </div>
+
+</div>
+
+
+<script>
+"use strict";
+
+/* =========================================================
+   IndexedDB
+========================================================= */
+
+const DB_NAME = "SalaryAppDB";
+const DB_VERSION = 3;
+
+let db = null;
+
+let editingSalaryId = null;
+let editingBonusId = null;
+
+const requestDB = indexedDB.open(DB_NAME, DB_VERSION);
+
+requestDB.onupgradeneeded = function(event) {
+
+    db = event.target.result;
+
+    if (!db.objectStoreNames.contains("salaries")) {
+
+        db.createObjectStore("salaries", {
+            keyPath: "id",
+            autoIncrement: true
+        });
+
+    }
+
+    if (!db.objectStoreNames.contains("bonuses")) {
+
+        db.createObjectStore("bonuses", {
+            keyPath: "id",
+            autoIncrement: true
+        });
+
+    }
+};
+
+
+requestDB.onsuccess = function(event) {
+
+    db = event.target.result;
+
+    db.onerror = function(event) {
+        console.error(
+            "IndexedDB error:",
+            event.target.error
+        );
+    };
+
+    setupNavigation();
+    setupYearSelect();
+    setDefaultDates();
+    resetSalaryForm();
+    resetBonusForm();
+    loadAll();
+};
+
+
+requestDB.onerror = function(event) {
+
+    alert(
+        "データベースを開けませんでした。"
+    );
+
+    console.error(event.target.error);
+};
+
+
+/* =========================================================
+   ナビゲーション
+========================================================= */
+
+function setupNavigation() {
+
+    const buttons =
+        document.querySelectorAll(".nav-button");
+
+    buttons.forEach(function(button) {
+
+        button.addEventListener("click", function() {
+
+            const page =
+                button.dataset.page;
+
+            showPage(page);
+
+        });
+
+    });
+
+}
+
+
+function showPage(pageName) {
+
+    const pages =
+        document.querySelectorAll(".page");
+
+    pages.forEach(function(page) {
+
+        page.classList.remove("active");
+
+    });
+
+    const target =
+        document.getElementById(
+            "page-" + pageName
+        );
+
+    if (target) {
+        target.classList.add("active");
+    }
+
+
+    const buttons =
+        document.querySelectorAll(".nav-button");
+
+    buttons.forEach(function(button) {
+
+        if (button.dataset.page === pageName) {
+            button.classList.add("active");
+        } else {
+            button.classList.remove("active");
+        }
+
+    });
+
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+}
+
+
+/* =========================================================
+   共通関数
+========================================================= */
+
+function yen(value) {
+
+    const num =
+        Number(value) || 0;
+
+    return num.toLocaleString("ja-JP") + "円";
+}
+
+
+function numberValue(id) {
+
+    const value =
+        document.getElementById(id).value;
+
+    if (value === "") {
+        return 0;
+    }
+
+    return Number(value);
+}
+
+
+function getYear(dateString) {
+
+    if (!dateString) {
+        return 0;
+    }
+
+    return Number(
+        dateString.substring(0, 4)
+    );
+}
+
+
+function getMonth(dateString) {
+
+    if (!dateString) {
+        return 0;
+    }
+
+    return Number(
+        dateString.substring(5, 7)
+    );
+}
+
+
+function todayString() {
+
+    const date = new Date();
+
+    const y =
+        date.getFullYear();
+
+    const m =
+        String(
+            date.getMonth() + 1
+        ).padStart(2, "0");
+
+    const d =
+        String(
+            date.getDate()
+        ).padStart(2, "0");
+
+    return `${y}-${m}-${d}`;
+}
+
+
+function setDefaultDates() {
+
+    document.getElementById(
+        "salaryDate"
+    ).value = todayString();
+
+    document.getElementById(
+        "bonusDate"
+    ).value = todayString();
+
+}
+
+
+/* =========================================================
+   給与計算
+========================================================= */
+
+function calculateSalary() {
+
+    const gross =
+        numberValue("salaryBase") +
+        numberValue("salaryAdjustment") +
+        numberValue("salaryOvertime") +
+        numberValue("salaryNightOvertime") +
+        numberValue("salaryCommuterPass") +
+        numberValue("salaryStockAllowance");
+
+
+    const deductions =
+        numberValue("salaryEmployment") +
+        numberValue("salaryHealth") +
+        numberValue("salaryPension") +
+        numberValue("salaryIncomeTax") +
+        numberValue("salaryResidentTax") +
+        numberValue("salaryMutualAid") +
+        numberValue("salaryStock") +
+        numberValue("salaryYearEndAdjustment");
+
+
+    const net =
+        gross - deductions;
+
+
+    document.getElementById(
+        "salaryGrossDisplay"
+    ).textContent = yen(gross);
+
+    document.getElementById(
+        "salaryDeductionDisplay"
+    ).textContent = yen(deductions);
+
+    document.getElementById(
+        "salaryNetDisplay"
+    ).textContent = yen(net);
+
+
+    return {
+        gross,
+        deductions,
+        net
+    };
+
+}
+
+
+/* =========================================================
+   賞与計算
+========================================================= */
+
+function calculateBonus() {
+
+    const gross =
+        numberValue("bonusAmount") +
+        numberValue("bonusAdjustment") +
+        numberValue("bonusReduction") +
+        numberValue("bonusStockAllowance");
+
+
+    const deductions =
+        numberValue("bonusEmployment") +
+        numberValue("bonusHealth") +
+        numberValue("bonusCare") +
+        numberValue("bonusPension") +
+        numberValue("bonusIncomeTax") +
+        numberValue("bonusMutualAid") +
+        numberValue("bonusStock") +
+        numberValue("bonusSettlement");
+
+
+    const net =
+        gross - deductions;
+
+
+    document.getElementById(
+        "bonusGrossDisplay"
+    ).textContent = yen(gross);
+
+    document.getElementById(
+        "bonusDeductionDisplay"
+    ).textContent = yen(deductions);
+
+    document.getElementById(
+        "bonusNetDisplay"
+    ).textContent = yen(net);
+
+
+    return {
+        gross,
+        deductions,
+        net
+    };
+
+}
+
+
+/* =========================================================
+   自動計算
+========================================================= */
+
+const salaryInputIds = [
+
+    "salaryBase",
+    "salaryAdjustment",
+    "salaryOvertime",
+    "salaryNightOvertime",
+    "salaryCommuterPass",
+    "salaryStockAllowance",
+
+    "salaryEmployment",
+    "salaryHealth",
+    "salaryPension",
+    "salaryIncomeTax",
+    "salaryResidentTax",
+    "salaryMutualAid",
+    "salaryStock",
+    "salaryYearEndAdjustment"
+
+];
+
+
+salaryInputIds.forEach(function(id) {
+
+    document.getElementById(id)
+        .addEventListener(
+            "input",
+            calculateSalary
+        );
+
+});
+
+
+const bonusInputIds = [
+
+    "bonusAmount",
+    "bonusAdjustment",
+    "bonusReduction",
+    "bonusStockAllowance",
+
+    "bonusEmployment",
+    "bonusHealth",
+    "bonusCare",
+    "bonusPension",
+    "bonusIncomeTax",
+    "bonusMutualAid",
+    "bonusStock",
+    "bonusSettlement"
+
+];
+
+
+bonusInputIds.forEach(function(id) {
+
+    document.getElementById(id)
+        .addEventListener(
+            "input",
+            calculateBonus
+        );
+
+});
+
+
+/* =========================================================
+   給与フォームリセット
+========================================================= */
+
+function resetSalaryForm() {
+
+    editingSalaryId = null;
+
+    document.getElementById(
+        "salaryForm"
+    ).reset();
+
+
+    document.getElementById(
+        "salaryDate"
+    ).value = todayString();
+
+
+    document.getElementById(
+        "salaryBase"
+    ).value = 337000;
+
+    document.getElementById(
+        "salaryAdjustment"
+    ).value = 29600;
+
+    document.getElementById(
+        "salaryOvertime"
+    ).value = "";
+
+    document.getElementById(
+        "salaryNightOvertime"
+    ).value = 0;
+
+    document.getElementById(
+        "salaryCommuterPass"
+    ).value = 0;
+
+    document.getElementById(
+        "salaryStockAllowance"
+    ).value = 600;
+
+
+    document.getElementById(
+        "salaryEmployment"
+    ).value = 0;
+
+    document.getElementById(
+        "salaryHealth"
+    ).value = 0;
+
+    document.getElementById(
+        "salaryPension"
+    ).value = 0;
+
+    document.getElementById(
+        "salaryIncomeTax"
+    ).value = 0;
+
+    document.getElementById(
+        "salaryResidentTax"
+    ).value = 0;
+
+    document.getElementById(
+        "salaryMutualAid"
+    ).value = 350;
+
+    document.getElementById(
+        "salaryStock"
+    ).value = 5600;
+
+    document.getElementById(
+        "salaryYearEndAdjustment"
+    ).value = "";
+
+
+    document.getElementById(
+        "salarySubmit"
+    ).textContent = "給与を登録";
+
+    document.getElementById(
+        "salaryCancel"
+    ).style.display = "none";
+
+    document.getElementById(
+        "salaryMessage"
+    ).textContent = "";
+
+
+    calculateSalary();
+
+}
+
+
+/* =========================================================
+   給与登録
+========================================================= */
+
+document.getElementById(
+    "salaryForm"
+).addEventListener(
+    "submit",
+    function(event) {
+
+        event.preventDefault();
+
+        const calculation =
+            calculateSalary();
+
+
+        const data = {
+
+            date:
+                document.getElementById(
+                    "salaryDate"
+                ).value,
+
+            base:
+                numberValue("salaryBase"),
+
+            adjustment:
+                numberValue("salaryAdjustment"),
+
+            overtime:
+                numberValue("salaryOvertime"),
+
+            nightOvertime:
+                numberValue(
+                    "salaryNightOvertime"
+                ),
+
+            commuterPass:
+                numberValue(
+                    "salaryCommuterPass"
+                ),
+
+            stockAllowance:
+                numberValue(
+                    "salaryStockAllowance"
+                ),
+
+
+            employment:
+                numberValue(
+                    "salaryEmployment"
+                ),
+
+            health:
+                numberValue(
+                    "salaryHealth"
+                ),
+
+            pension:
+                numberValue(
+                    "salaryPension"
+                ),
+
+            incomeTax:
+                numberValue(
+                    "salaryIncomeTax"
+                ),
+
+            residentTax:
+                numberValue(
+                    "salaryResidentTax"
+                ),
+
+            mutualAid:
+                numberValue(
+                    "salaryMutualAid"
+                ),
+
+            stock:
+                numberValue(
+                    "salaryStock"
+                ),
+
+            yearEndAdjustment:
+                numberValue(
+                    "salaryYearEndAdjustment"
+                ),
+
+
+            gross:
+                calculation.gross,
+
+            deductions:
+                calculation.deductions,
+
+            net:
+                calculation.net,
+
+            createdAt:
+                Date.now()
+
+        };
+
+
+        if (!data.date) {
+
+            alert(
+                "支給日を入力してください。"
+            );
+
+            return;
+        }
+
+
+        const transaction =
+            db.transaction(
+                ["salaries"],
+                "readwrite"
+            );
+
+        const store =
+            transaction.objectStore(
+                "salaries"
+            );
+
+
+        if (editingSalaryId !== null) {
+
+            data.id =
+                editingSalaryId;
+
+            store.put(data);
+
+            transaction.oncomplete =
+                function() {
+
+                    document.getElementById(
+                        "salaryMessage"
+                    ).textContent =
+                        "給与を更新しました。";
+
+                    resetSalaryForm();
+
+                    loadAll();
+
+                    showPage(
+                        "salary-history"
+                    );
+
+                };
+
+
+        } else {
+
+            store.add(data);
+
+            transaction.oncomplete =
+                function() {
+
+                    document.getElementById(
+                        "salaryMessage"
+                    ).textContent =
+                        "給与を登録しました。";
+
+                    resetSalaryForm();
+
+                    loadAll();
+
+                    showPage(
+                        "salary-history"
+                    );
+
+                };
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   給与編集
+========================================================= */
+
+function editSalary(id) {
+
+    getRecord(
+        "salaries",
+        id,
+        function(data) {
+
+            if (!data) {
+                return;
+            }
+
+
+            editingSalaryId = id;
+
+
+            document.getElementById(
+                "salaryDate"
+            ).value =
+                data.date || "";
+
+
+            if ("base" in data) {
+
+                document.getElementById(
+                    "salaryBase"
+                ).value =
+                    data.base;
+
+                document.getElementById(
+                    "salaryAdjustment"
+                ).value =
+                    data.adjustment;
+
+                document.getElementById(
+                    "salaryOvertime"
+                ).value =
+                    data.overtime === 0
+                    ? ""
+                    : data.overtime;
+
+                document.getElementById(
+                    "salaryNightOvertime"
+                ).value =
+                    data.nightOvertime;
+
+                document.getElementById(
+                    "salaryCommuterPass"
+                ).value =
+                    data.commuterPass;
+
+                document.getElementById(
+                    "salaryStockAllowance"
+                ).value =
+                    data.stockAllowance;
+
+
+                document.getElementById(
+                    "salaryEmployment"
+                ).value =
+                    data.employment;
+
+                document.getElementById(
+                    "salaryHealth"
+                ).value =
+                    data.health;
+
+                document.getElementById(
+                    "salaryPension"
+                ).value =
+                    data.pension;
+
+                document.getElementById(
+                    "salaryIncomeTax"
+                ).value =
+                    data.incomeTax;
+
+                document.getElementById(
+                    "salaryResidentTax"
+                ).value =
+                    data.residentTax;
+
+                document.getElementById(
+                    "salaryMutualAid"
+                ).value =
+                    data.mutualAid;
+
+                document.getElementById(
+                    "salaryStock"
+                ).value =
+                    data.stock;
+
+                document.getElementById(
+                    "salaryYearEndAdjustment"
+                ).value =
+                    data.yearEndAdjustment === 0
+                    ? ""
+                    : data.yearEndAdjustment;
+
+
+            } else {
+
+                /*
+                 * 旧形式データ互換
+                 */
+
+                document.getElementById(
+                    "salaryBase"
+                ).value = 0;
+
+                document.getElementById(
+                    "salaryAdjustment"
+                ).value = 0;
+
+                document.getElementById(
+                    "salaryOvertime"
+                ).value =
+                    data.gross || 0;
+
+                document.getElementById(
+                    "salaryNightOvertime"
+                ).value = 0;
+
+                document.getElementById(
+                    "salaryCommuterPass"
+                ).value = 0;
+
+                document.getElementById(
+                    "salaryStockAllowance"
+                ).value = 0;
+
+
+                document.getElementById(
+                    "salaryEmployment"
+                ).value =
+                    data.employmentInsurance || 0;
+
+                document.getElementById(
+                    "salaryHealth"
+                ).value =
+                    data.healthInsurance || 0;
+
+                document.getElementById(
+                    "salaryPension"
+                ).value =
+                    data.pension || 0;
+
+                document.getElementById(
+                    "salaryIncomeTax"
+                ).value =
+                    data.incomeTax || 0;
+
+                document.getElementById(
+                    "salaryResidentTax"
+                ).value =
+                    data.residentTax || 0;
+
+                document.getElementById(
+                    "salaryMutualAid"
+                ).value = 0;
+
+                document.getElementById(
+                    "salaryStock"
+                ).value = 0;
+
+                document.getElementById(
+                    "salaryYearEndAdjustment"
+                ).value = 0;
+
+            }
+
+
+            calculateSalary();
+
+
+            document.getElementById(
+                "salarySubmit"
+            ).textContent =
+                "給与を更新";
+
+
+            document.getElementById(
+                "salaryCancel"
+            ).style.display =
+                "inline-block";
+
+
+            showPage(
+                "salary-register"
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   給与キャンセル
+========================================================= */
+
+document.getElementById(
+    "salaryCancel"
+).addEventListener(
+    "click",
+    function() {
+
+        resetSalaryForm();
+
+    }
+);
+
+
+/* =========================================================
+   給与削除
+========================================================= */
+
+function deleteSalary(id) {
+
+    if (!confirm(
+        "この給与データを削除しますか？"
+    )) {
+        return;
+    }
+
+
+    const transaction =
+        db.transaction(
+            ["salaries"],
+            "readwrite"
+        );
+
+    const store =
+        transaction.objectStore(
+            "salaries"
+        );
+
+    store.delete(id);
+
+
+    transaction.oncomplete =
+        function() {
+
+            loadAll();
+
+        };
+
+}
+
+
+/* =========================================================
+   賞与フォームリセット
+========================================================= */
+
+function resetBonusForm() {
+
+    editingBonusId = null;
+
+    document.getElementById(
+        "bonusForm"
+    ).reset();
+
+
+    document.getElementById(
+        "bonusDate"
+    ).value = todayString();
+
+
+    document.getElementById(
+        "bonusAmount"
+    ).value = "";
+
+    document.getElementById(
+        "bonusAdjustment"
+    ).value = 0;
+
+    document.getElementById(
+        "bonusReduction"
+    ).value = 0;
+
+    document.getElementById(
+        "bonusStockAllowance"
+    ).value = 1800;
+
+
+    document.getElementById(
+        "bonusEmployment"
+    ).value = 0;
+
+    document.getElementById(
+        "bonusHealth"
+    ).value = 0;
+
+    document.getElementById(
+        "bonusCare"
+    ).value = 0;
+
+    document.getElementById(
+        "bonusPension"
+    ).value = 0;
+
+    document.getElementById(
+        "bonusIncomeTax"
+    ).value = 0;
+
+    document.getElementById(
+        "bonusMutualAid"
+    ).value = 0;
+
+    document.getElementById(
+        "bonusStock"
+    ).value = 16800;
+
+    document.getElementById(
+        "bonusSettlement"
+    ).value = 0;
+
+
+    document.getElementById(
+        "bonusSubmit"
+    ).textContent = "賞与を登録";
+
+    document.getElementById(
+        "bonusCancel"
+    ).style.display = "none";
+
+    document.getElementById(
+        "bonusMessage"
+    ).textContent = "";
+
+
+    calculateBonus();
+
+}
+
+
+/* =========================================================
+   賞与登録
+========================================================= */
+
+document.getElementById(
+    "bonusForm"
+).addEventListener(
+    "submit",
+    function(event) {
+
+        event.preventDefault();
+
+
+        const calculation =
+            calculateBonus();
+
+
+        const data = {
+
+            date:
+                document.getElementById(
+                    "bonusDate"
+                ).value,
+
+            amount:
+                numberValue(
+                    "bonusAmount"
+                ),
+
+            adjustment:
+                numberValue(
+                    "bonusAdjustment"
+                ),
+
+            reduction:
+                numberValue(
+                    "bonusReduction"
+                ),
+
+            stockAllowance:
+                numberValue(
+                    "bonusStockAllowance"
+                ),
+
+
+            employment:
+                numberValue(
+                    "bonusEmployment"
+                ),
+
+            health:
+                numberValue(
+                    "bonusHealth"
+                ),
+
+            care:
+                numberValue(
+                    "bonusCare"
+                ),
+
+            pension:
+                numberValue(
+                    "bonusPension"
+                ),
+
+            incomeTax:
+                numberValue(
+                    "bonusIncomeTax"
+                ),
+
+            mutualAid:
+                numberValue(
+                    "bonusMutualAid"
+                ),
+
+            stock:
+                numberValue(
+                    "bonusStock"
+                ),
+
+            settlement:
+                numberValue(
+                    "bonusSettlement"
+                ),
+
+
+            gross:
+                calculation.gross,
+
+            deductions:
+                calculation.deductions,
+
+            net:
+                calculation.net,
+
+            createdAt:
+                Date.now()
+
+        };
+
+
+        if (!data.date) {
+
+            alert(
+                "支給日を入力してください。"
+            );
+
+            return;
+        }
+
+
+        const transaction =
+            db.transaction(
+                ["bonuses"],
+                "readwrite"
+            );
+
+        const store =
+            transaction.objectStore(
+                "bonuses"
+            );
+
+
+        if (editingBonusId !== null) {
+
+            data.id =
+                editingBonusId;
+
+            store.put(data);
+
+            transaction.oncomplete =
+                function() {
+
+                    document.getElementById(
+                        "bonusMessage"
+                    ).textContent =
+                        "賞与を更新しました。";
+
+                    resetBonusForm();
+
+                    loadAll();
+
+                    showPage(
+                        "bonus-history"
+                    );
+
+                };
+
+
+        } else {
+
+            store.add(data);
+
+            transaction.oncomplete =
+                function() {
+
+                    document.getElementById(
+                        "bonusMessage"
+                    ).textContent =
+                        "賞与を登録しました。";
+
+                    resetBonusForm();
+
+                    loadAll();
+
+                    showPage(
+                        "bonus-history"
+                    );
+
+                };
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   賞与編集
+========================================================= */
+
+function editBonus(id) {
+
+    getRecord(
+        "bonuses",
+        id,
+        function(data) {
+
+            if (!data) {
+                return;
+            }
+
+
+            editingBonusId = id;
+
+
+            document.getElementById(
+                "bonusDate"
+            ).value =
+                data.date || "";
+
+
+            if ("amount" in data) {
+
+                document.getElementById(
+                    "bonusAmount"
+                ).value =
+                    data.amount;
+
+                document.getElementById(
+                    "bonusAdjustment"
+                ).value =
+                    data.adjustment;
+
+                document.getElementById(
+                    "bonusReduction"
+                ).value =
+                    data.reduction;
+
+                document.getElementById(
+                    "bonusStockAllowance"
+                ).value =
+                    data.stockAllowance;
+
+
+                document.getElementById(
+                    "bonusEmployment"
+                ).value =
+                    data.employment;
+
+                document.getElementById(
+                    "bonusHealth"
+                ).value =
+                    data.health;
+
+                document.getElementById(
+                    "bonusCare"
+                ).value =
+                    data.care;
+
+                document.getElementById(
+                    "bonusPension"
+                ).value =
+                    data.pension;
+
+                document.getElementById(
+                    "bonusIncomeTax"
+                ).value =
+                    data.incomeTax;
+
+                document.getElementById(
+                    "bonusMutualAid"
+                ).value =
+                    data.mutualAid;
+
+                document.getElementById(
+                    "bonusStock"
+                ).value =
+                    data.stock;
+
+                document.getElementById(
+                    "bonusSettlement"
+                ).value =
+                    data.settlement;
+
+
+            } else {
+
+                /*
+                 * 旧形式データ互換
+                 */
+
+                document.getElementById(
+                    "bonusAmount"
+                ).value =
+                    data.gross || 0;
+
+                document.getElementById(
+                    "bonusAdjustment"
+                ).value = 0;
+
+                document.getElementById(
+                    "bonusReduction"
+                ).value = 0;
+
+                document.getElementById(
+                    "bonusStockAllowance"
+                ).value = 0;
+
+
+                document.getElementById(
+                    "bonusEmployment"
+                ).value =
+                    data.employmentInsurance || 0;
+
+                document.getElementById(
+                    "bonusHealth"
+                ).value =
+                    data.healthInsurance || 0;
+
+                document.getElementById(
+                    "bonusCare"
+                ).value = 0;
+
+                document.getElementById(
+                    "bonusPension"
+                ).value =
+                    data.pension || 0;
+
+                document.getElementById(
+                    "bonusIncomeTax"
+                ).value =
+                    data.incomeTax || 0;
+
+                document.getElementById(
+                    "bonusMutualAid"
+                ).value = 0;
+
+                document.getElementById(
+                    "bonusStock"
+                ).value = 0;
+
+                document.getElementById(
+                    "bonusSettlement"
+                ).value = 0;
+
+            }
+
+
+            calculateBonus();
+
+
+            document.getElementById(
+                "bonusSubmit"
+            ).textContent =
+                "賞与を更新";
+
+
+            document.getElementById(
+                "bonusCancel"
+            ).style.display =
+                "inline-block";
+
+
+            showPage(
+                "bonus-register"
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   賞与キャンセル
+========================================================= */
+
+document.getElementById(
+    "bonusCancel"
+).addEventListener(
+    "click",
+    function() {
+
+        resetBonusForm();
+
+    }
+);
+
+
+/* =========================================================
+   賞与削除
+========================================================= */
+
+function deleteBonus(id) {
+
+    if (!confirm(
+        "この賞与データを削除しますか？"
+    )) {
+        return;
+    }
+
+
+    const transaction =
+        db.transaction(
+            ["bonuses"],
+            "readwrite"
+        );
+
+    const store =
+        transaction.objectStore(
+            "bonuses"
+        );
+
+    store.delete(id);
+
+
+    transaction.oncomplete =
+        function() {
+
+            loadAll();
+
+        };
+
+}
+
+
+/* =========================================================
+   IndexedDB取得
+========================================================= */
+
+function getAll(storeName, callback) {
+
+    const transaction =
+        db.transaction(
+            [storeName],
+            "readonly"
+        );
+
+    const store =
+        transaction.objectStore(
+            storeName
+        );
+
+    const request =
+        store.getAll();
+
+
+    request.onsuccess =
+        function() {
+
+            callback(
+                request.result || []
+            );
+
+        };
+
+}
+
+
+function getRecord(
+    storeName,
+    id,
+    callback
+) {
+
+    const transaction =
+        db.transaction(
+            [storeName],
+            "readonly"
+        );
+
+    const store =
+        transaction.objectStore(
+            storeName
+        );
+
+    const request =
+        store.get(id);
+
+
+    request.onsuccess =
+        function() {
+
+            callback(
+                request.result
+            );
+
+        };
+
+}
+
+
+/* =========================================================
+   給与一覧
+========================================================= */
+
+function loadSalaryList() {
+
+    getAll(
+        "salaries",
+        function(data) {
+
+            data.sort(
+                function(a, b) {
+
+                    return String(b.date)
+                        .localeCompare(
+                            String(a.date)
+                        );
+
+                }
+            );
+
+
+            const tbody =
+                document.getElementById(
+                    "salaryList"
+                );
+
+            tbody.innerHTML = "";
+
+
+            if (data.length === 0) {
+
+                tbody.innerHTML =
+                    '<tr><td colspan="5">給与データがありません。</td></tr>';
+
+                return;
+            }
+
+
+            data.forEach(
+                function(item) {
+
+                    const tr =
+                        document.createElement(
+                            "tr"
+                        );
+
+
+                    const gross =
+                        getSalaryGross(
+                            item
+                        );
+
+                    const deductions =
+                        getSalaryDeductions(
+                            item
+                        );
+
+                    const net =
+                        getSalaryNet(
+                            item
+                        );
+
+
+                    tr.innerHTML = `
+
+                        <td>
+                            ${item.date || ""}
+                        </td>
+
+                        <td>
+                            ${yen(gross)}
+                        </td>
+
+                        <td>
+                            ${yen(deductions)}
+                        </td>
+
+                        <td>
+                            ${yen(net)}
+                        </td>
+
+                        <td>
+
+                            <button
+                                class="edit"
+                                onclick="editSalary(${item.id})">
+                                編集
+                            </button>
+
+                            <button
+                                class="delete"
+                                onclick="deleteSalary(${item.id})">
+                                削除
+                            </button>
+
+                        </td>
+
+                    `;
+
+
+                    tbody.appendChild(tr);
+
+                }
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   賞与一覧
+========================================================= */
+
+function loadBonusList() {
+
+    getAll(
+        "bonuses",
+        function(data) {
+
+            data.sort(
+                function(a, b) {
+
+                    return String(b.date)
+                        .localeCompare(
+                            String(a.date)
+                        );
+
+                }
+            );
+
+
+            const tbody =
+                document.getElementById(
+                    "bonusList"
+                );
+
+            tbody.innerHTML = "";
+
+
+            if (data.length === 0) {
+
+                tbody.innerHTML =
+                    '<tr><td colspan="5">賞与データがありません。</td></tr>';
+
+                return;
+            }
+
+
+            data.forEach(
+                function(item) {
+
+                    const tr =
+                        document.createElement(
+                            "tr"
+                        );
+
+
+                    const gross =
+                        getBonusGross(
+                            item
+                        );
+
+                    const deductions =
+                        getBonusDeductions(
+                            item
+                        );
+
+                    const net =
+                        getBonusNet(
+                            item
+                        );
+
+
+                    tr.innerHTML = `
+
+                        <td>
+                            ${item.date || ""}
+                        </td>
+
+                        <td>
+                            ${yen(gross)}
+                        </td>
+
+                        <td>
+                            ${yen(deductions)}
+                        </td>
+
+                        <td>
+                            ${yen(net)}
+                        </td>
+
+                        <td>
+
+                            <button
+                                class="edit"
+                                onclick="editBonus(${item.id})">
+                                編集
+                            </button>
+
+                            <button
+                                class="delete"
+                                onclick="deleteBonus(${item.id})">
+                                削除
+                            </button>
+
+                        </td>
+
+                    `;
+
+
+                    tbody.appendChild(tr);
+
+                }
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   金額取得
+========================================================= */
+
+function getSalaryGross(item) {
+
+    return Number(item.gross) || 0;
+
+}
+
+
+function getSalaryDeductions(item) {
+
+    if ("deductions" in item) {
+
+        return Number(
+            item.deductions
+        ) || 0;
+
+    }
+
+
+    return (
+
+        Number(item.healthInsurance) +
+        Number(item.pension) +
+        Number(item.employmentInsurance) +
+        Number(item.incomeTax) +
+        Number(item.residentTax)
+
+    ) || 0;
+
+}
+
+
+function getSalaryNet(item) {
+
+    if ("net" in item) {
+
+        return Number(
+            item.net
+        ) || 0;
+
+    }
+
+
+    return (
+        getSalaryGross(item) -
+        getSalaryDeductions(item)
+    );
+
+}
+
+
+function getBonusGross(item) {
+
+    return Number(
+        item.gross
+    ) || 0;
+
+}
+
+
+function getBonusDeductions(item) {
+
+    if ("deductions" in item) {
+
+        return Number(
+            item.deductions
+        ) || 0;
+
+    }
+
+
+    return (
+
+        Number(item.healthInsurance) +
+        Number(item.pension) +
+        Number(item.employmentInsurance) +
+        Number(item.incomeTax)
+
+    ) || 0;
+
+}
+
+
+function getBonusNet(item) {
+
+    if ("net" in item) {
+
+        return Number(
+            item.net
+        ) || 0;
+
+    }
+
+
+    return (
+        getBonusGross(item) -
+        getBonusDeductions(item)
+    );
+
+}
+
+
+/* =========================================================
+   年選択
+========================================================= */
+
+function setupYearSelect() {
+
+    const select =
+        document.getElementById(
+            "summaryYear"
+        );
+
+
+    select.innerHTML = "";
+
+
+    const currentYear =
+        new Date().getFullYear();
+
+
+    for (
+        let year = 2020;
+        year <= currentYear;
+        year++
+    ) {
+
+        const option =
+            document.createElement(
+                "option"
+            );
+
+
+        option.value = year;
+
+        option.textContent =
+            year + "年";
+
+
+        if (year === currentYear) {
+
+            option.selected = true;
+
+        }
+
+
+        select.appendChild(option);
+
+    }
+
+
+    select.addEventListener(
+        "change",
+        function() {
+
+            updateSummary();
+            loadChart();
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   年間集計
+========================================================= */
+
+function updateSummary() {
+
+    const year =
+        Number(
+            document.getElementById(
+                "summaryYear"
+            ).value
+        );
+
+
+    getAll(
+        "salaries",
+        function(salaries) {
+
+            getAll(
+                "bonuses",
+                function(bonuses) {
+
+                    const yearlySalaries =
+                        salaries.filter(
+                            function(item) {
+
+                                return (
+                                    getYear(
+                                        item.date
+                                    ) === year
+                                );
+
+                            }
+                        );
+
+
+                    const yearlyBonuses =
+                        bonuses.filter(
+                            function(item) {
+
+                                return (
+                                    getYear(
+                                        item.date
+                                    ) === year
+                                );
+
+                            }
+                        );
+
+
+                    let salaryGross = 0;
+                    let salaryNet = 0;
+
+                    let bonusGross = 0;
+                    let bonusNet = 0;
+
+                    let employment = 0;
+                    let health = 0;
+                    let pension = 0;
+                    let incomeTax = 0;
+                    let residentTax = 0;
+
+
+                    yearlySalaries.forEach(
+                        function(item) {
+
+                            salaryGross +=
+                                getSalaryGross(
+                                    item
+                                );
+
+                            salaryNet +=
+                                getSalaryNet(
+                                    item
+                                );
+
+
+                            if (
+                                "employment"
+                                in item
+                            ) {
+
+                                employment +=
+                                    Number(
+                                        item.employment
+                                    ) || 0;
+
+                                health +=
+                                    Number(
+                                        item.health
+                                    ) || 0;
+
+                                pension +=
+                                    Number(
+                                        item.pension
+                                    ) || 0;
+
+                                incomeTax +=
+                                    Number(
+                                        item.incomeTax
+                                    ) || 0;
+
+                                residentTax +=
+                                    Number(
+                                        item.residentTax
+                                    ) || 0;
+
+                            } else {
+
+                                employment +=
+                                    Number(
+                                        item.employmentInsurance
+                                    ) || 0;
+
+                                health +=
+                                    Number(
+                                        item.healthInsurance
+                                    ) || 0;
+
+                                pension +=
+                                    Number(
+                                        item.pension
+                                    ) || 0;
+
+                                incomeTax +=
+                                    Number(
+                                        item.incomeTax
+                                    ) || 0;
+
+                                residentTax +=
+                                    Number(
+                                        item.residentTax
+                                    ) || 0;
+
+                            }
+
+                        }
+                    );
+
+
+                    yearlyBonuses.forEach(
+                        function(item) {
+
+                            bonusGross +=
+                                getBonusGross(
+                                    item
+                                );
+
+                            bonusNet +=
+                                getBonusNet(
+                                    item
+                                );
+
+
+                            if (
+                                "employment"
+                                in item
+                            ) {
+
+                                employment +=
+                                    Number(
+                                        item.employment
+                                    ) || 0;
+
+                                health +=
+                                    Number(
+                                        item.health
+                                    ) || 0;
+
+                                pension +=
+                                    Number(
+                                        item.pension
+                                    ) || 0;
+
+                                incomeTax +=
+                                    Number(
+                                        item.incomeTax
+                                    ) || 0;
+
+                            } else {
+
+                                employment +=
+                                    Number(
+                                        item.employmentInsurance
+                                    ) || 0;
+
+                                health +=
+                                    Number(
+                                        item.healthInsurance
+                                    ) || 0;
+
+                                pension +=
+                                    Number(
+                                        item.pension
+                                    ) || 0;
+
+                                incomeTax +=
+                                    Number(
+                                        item.incomeTax
+                                    ) || 0;
+
+                            }
+
+                        }
+                    );
+
+
+                    document.getElementById(
+                        "yearSalaryGross"
+                    ).textContent =
+                        yen(salaryGross);
+
+
+                    document.getElementById(
+                        "yearSalaryNet"
+                    ).textContent =
+                        yen(salaryNet);
+
+
+                    document.getElementById(
+                        "yearSalaryCount"
+                    ).textContent =
+                        yearlySalaries.length +
+                        "か月";
+
+
+                    document.getElementById(
+                        "yearBonusGross"
+                    ).textContent =
+                        yen(bonusGross);
+
+
+                    document.getElementById(
+                        "yearBonusNet"
+                    ).textContent =
+                        yen(bonusNet);
+
+
+                    document.getElementById(
+                        "yearTotalGross"
+                    ).textContent =
+                        yen(
+                            salaryGross +
+                            bonusGross
+                        );
+
+
+                    document.getElementById(
+                        "yearTotalNet"
+                    ).textContent =
+                        yen(
+                            salaryNet +
+                            bonusNet
+                        );
+
+
+                    document.getElementById(
+                        "yearEmployment"
+                    ).textContent =
+                        yen(employment);
+
+
+                    document.getElementById(
+                        "yearHealth"
+                    ).textContent =
+                        yen(health);
+
+
+                    document.getElementById(
+                        "yearPension"
+                    ).textContent =
+                        yen(pension);
+
+
+                    document.getElementById(
+                        "yearIncomeTax"
+                    ).textContent =
+                        yen(incomeTax);
+
+
+                    document.getElementById(
+                        "yearResidentTax"
+                    ).textContent =
+                        yen(residentTax);
+
+                }
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   グラフ
+========================================================= */
+
+function loadChart() {
+
+    const year =
+        Number(
+            document.getElementById(
+                "summaryYear"
+            ).value
+        );
+
+
+    getAll(
+        "salaries",
+        function(salaries) {
+
+            getAll(
+                "bonuses",
+                function(bonuses) {
+
+                    const salaryGross =
+                        Array(12).fill(0);
+
+                    const salaryNet =
+                        Array(12).fill(0);
+
+                    const bonusGross =
+                        Array(12).fill(0);
+
+                    const bonusNet =
+                        Array(12).fill(0);
+
+
+                    salaries.forEach(
+                        function(item) {
+
+                            if (
+                                getYear(
+                                    item.date
+                                ) !== year
+                            ) {
+                                return;
+                            }
+
+
+                            const month =
+                                getMonth(
+                                    item.date
+                                );
+
+
+                            if (
+                                month >= 1 &&
+                                month <= 12
+                            ) {
+
+                                salaryGross[
+                                    month - 1
+                                ] +=
+                                    getSalaryGross(
+                                        item
+                                    );
+
+                                salaryNet[
+                                    month - 1
+                                ] +=
+                                    getSalaryNet(
+                                        item
+                                    );
+
+                            }
+
+                        }
+                    );
+
+
+                    bonuses.forEach(
+                        function(item) {
+
+                            if (
+                                getYear(
+                                    item.date
+                                ) !== year
+                            ) {
+                                return;
+                            }
+
+
+                            const month =
+                                getMonth(
+                                    item.date
+                                );
+
+
+                            if (
+                                month >= 1 &&
+                                month <= 12
+                            ) {
+
+                                bonusGross[
+                                    month - 1
+                                ] +=
+                                    getBonusGross(
+                                        item
+                                    );
+
+                                bonusNet[
+                                    month - 1
+                                ] +=
+                                    getBonusNet(
+                                        item
+                                    );
+
+                            }
+
+                        }
+                    );
+
+
+                    drawChart(
+                        salaryGross,
+                        salaryNet,
+                        bonusGross,
+                        bonusNet
+                    );
+
+                }
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   グラフ描画
+========================================================= */
+
+function drawChart(
+    salaryGross,
+    salaryNet,
+    bonusGross,
+    bonusNet
+) {
+
+    const canvas =
+        document.getElementById(
+            "chart"
+        );
+
+    const ctx =
+        canvas.getContext("2d");
+
+
+    const width =
+        canvas.width;
+
+    const height =
+        canvas.height;
+
+
+    ctx.clearRect(
+        0,
+        0,
+        width,
+        height
+    );
+
+
+    const marginLeft = 70;
+    const marginRight = 30;
+    const marginTop = 30;
+    const marginBottom = 55;
+
+
+    const chartWidth =
+        width -
+        marginLeft -
+        marginRight;
+
+
+    const chartHeight =
+        height -
+        marginTop -
+        marginBottom;
+
+
+    const allValues = [
+
+        ...salaryGross,
+        ...salaryNet,
+        ...bonusGross,
+        ...bonusNet
+
+    ];
+
+
+    let maxValue =
+        Math.max(
+            ...allValues
+        );
+
+
+    if (maxValue <= 0) {
+        maxValue = 100000;
+    }
+
+
+    maxValue =
+        Math.ceil(
+            maxValue / 100000
+        ) * 100000;
+
+
+    ctx.strokeStyle = "#dddddd";
+    ctx.fillStyle = "#555";
+    ctx.lineWidth = 1;
+
+
+    const gridCount = 5;
+
+
+    for (
+        let i = 0;
+        i <= gridCount;
+        i++
+    ) {
+
+        const y =
+            marginTop +
+            chartHeight -
+            (
+                chartHeight *
+                i /
+                gridCount
+            );
+
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            marginLeft,
+            y
+        );
+
+        ctx.lineTo(
+            width - marginRight,
+            y
+        );
+
+        ctx.stroke();
+
+
+        const value =
+            maxValue *
+            i /
+            gridCount;
+
+
+        ctx.textAlign = "right";
+        ctx.textBaseline = "middle";
+        ctx.font = "12px Arial";
+
+
+        ctx.fillText(
+            Math.round(
+                value / 10000
+            ) + "万円",
+            marginLeft - 8,
+            y
+        );
+
+    }
+
+
+    ctx.strokeStyle = "#999";
+
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        marginLeft,
+        marginTop
+    );
+
+    ctx.lineTo(
+        marginLeft,
+        height - marginBottom
+    );
+
+    ctx.lineTo(
+        width - marginRight,
+        height - marginBottom
+    );
+
+    ctx.stroke();
+
+
+    function xPosition(index) {
+
+        return (
+            marginLeft +
+            chartWidth *
+            index /
+            11
+        );
+
+    }
+
+
+    function yPosition(value) {
+
+        return (
+            marginTop +
+            chartHeight -
+            (
+                value /
+                maxValue
+            ) *
+            chartHeight
+        );
+
+    }
+
+
+    ctx.fillStyle = "#444";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "top";
+    ctx.font = "13px Arial";
+
+
+    for (
+        let i = 0;
+        i < 12;
+        i++
+    ) {
+
+        ctx.fillText(
+            (i + 1) + "月",
+            xPosition(i),
+            height -
+            marginBottom +
+            10
+        );
+
+    }
+
+
+    function drawLine(data) {
+
+        ctx.beginPath();
+
+
+        data.forEach(
+            function(value, index) {
+
+                const x =
+                    xPosition(index);
+
+                const y =
+                    yPosition(value);
+
+
+                if (index === 0) {
+
+                    ctx.moveTo(
+                        x,
+                        y
+                    );
+
+                } else {
+
+                    ctx.lineTo(
+                        x,
+                        y
+                    );
+
+                }
+
+            }
+        );
+
+
+        ctx.stroke();
+
+
+        data.forEach(
+            function(value, index) {
+
+                const x =
+                    xPosition(index);
+
+                const y =
+                    yPosition(value);
+
+
+                ctx.beginPath();
+
+                ctx.arc(
+                    x,
+                    y,
+                    4,
+                    0,
+                    Math.PI * 2
+                );
+
+                ctx.fill();
+
+            }
+        );
+
+    }
+
+
+    ctx.lineWidth = 2;
+
+
+    ctx.strokeStyle = "#333";
+    ctx.fillStyle = "#333";
+    drawLine(salaryGross);
+
+
+    ctx.strokeStyle = "#666";
+    ctx.fillStyle = "#666";
+    drawLine(salaryNet);
+
+
+    ctx.strokeStyle = "#999";
+    ctx.fillStyle = "#999";
+    drawLine(bonusGross);
+
+
+    ctx.strokeStyle = "#bbb";
+    ctx.fillStyle = "#bbb";
+    drawLine(bonusNet);
+
+
+    /* 凡例 */
+
+    const legendY = 15;
+
+    ctx.font = "13px Arial";
+    ctx.textAlign = "left";
+    ctx.textBaseline = "middle";
+
+
+    const legends = [
+
+        ["給与総支給", "#333"],
+        ["給与手取り", "#666"],
+        ["賞与総支給", "#999"],
+        ["賞与手取り", "#bbb"]
+
+    ];
+
+
+    let legendX =
+        marginLeft;
+
+
+    legends.forEach(
+        function(legend) {
+
+            ctx.fillStyle =
+                legend[1];
+
+
+            ctx.fillRect(
+                legendX,
+                legendY - 5,
+                25,
+                3
+            );
+
+
+            ctx.fillStyle =
+                "#333";
+
+
+            ctx.fillText(
+                legend[0],
+                legendX + 32,
+                legendY
+            );
+
+
+            legendX += 130;
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   バックアップ
+========================================================= */
+
+document.getElementById(
+    "backupBtn"
+).addEventListener(
+    "click",
+    function() {
+
+        getAll(
+            "salaries",
+            function(salaries) {
+
+                getAll(
+                    "bonuses",
+                    function(bonuses) {
+
+                        const backup = {
+
+                            app:
+                                "salary-app",
+
+                            version:
+                                2,
+
+                            exportedAt:
+                                new Date()
+                                .toISOString(),
+
+                            salaries:
+                                salaries,
+
+                            bonuses:
+                                bonuses
+
+                        };
+
+
+                        const json =
+                            JSON.stringify(
+                                backup,
+                                null,
+                                2
+                            );
+
+
+                        const blob =
+                            new Blob(
+                                [json],
+                                {
+                                    type:
+                                        "application/json"
+                                }
+                            );
+
+
+                        const url =
+                            URL.createObjectURL(
+                                blob
+                            );
+
+
+                        const a =
+                            document.createElement(
+                                "a"
+                            );
+
+
+                        const date =
+                            new Date();
+
+
+                        const filename =
+                            "salary-backup-" +
+                            date.getFullYear() +
+                            "-" +
+                            String(
+                                date.getMonth() + 1
+                            ).padStart(2, "0") +
+                            "-" +
+                            String(
+                                date.getDate()
+                            ).padStart(2, "0") +
+                            ".json";
+
+
+                        a.href = url;
+                        a.download =
+                            filename;
+
+
+                        document.body.appendChild(a);
+
+                        a.click();
+
+                        document.body.removeChild(a);
+
+
+                        URL.revokeObjectURL(
+                            url
+                        );
+
+
+                        alert(
+                            "データをバックアップしました。"
+                        );
+
+                    }
+                );
+
+            }
+        );
+
+    }
+);
+
+
+/* =========================================================
+   復元
+========================================================= */
+
+document.getElementById(
+    "restoreBtn"
+).addEventListener(
+    "click",
+    function() {
+
+        document.getElementById(
+            "restoreFile"
+        ).click();
+
+    }
+);
+
+
+document.getElementById(
+    "restoreFile"
+).addEventListener(
+    "change",
+    function(event) {
+
+        const file =
+            event.target.files[0];
+
+
+        if (!file) {
+            return;
+        }
+
+
+        const reader =
+            new FileReader();
+
+
+        reader.onload =
+            function(e) {
+
+                try {
+
+                    const data =
+                        JSON.parse(
+                            e.target.result
+                        );
+
+
+                    restoreData(data);
+
+
+                } catch (error) {
+
+                    alert(
+                        "JSONファイルを読み込めませんでした。\n" +
+                        error.message
+                    );
+
+                }
+
+
+                event.target.value = "";
+
+            };
+
+
+        reader.readAsText(file);
+
+    }
+);
+
+
+/* =========================================================
+   データ復元
+========================================================= */
+
+function restoreData(data) {
+
+    if (
+        !data ||
+        data.app !== "salary-app"
+    ) {
+
+        alert(
+            "このアプリのバックアップファイルではありません。"
+        );
+
+        return;
+    }
+
+
+    if (
+        !Array.isArray(data.salaries) ||
+        !Array.isArray(data.bonuses)
+    ) {
+
+        alert(
+            "バックアップデータの形式が正しくありません。"
+        );
+
+        return;
+    }
+
+
+    const firstConfirm =
+        confirm(
+            "現在保存されている給与・賞与データを\n" +
+            "バックアップデータで置き換えます。\n\n" +
+            "続行しますか？"
+        );
+
+
+    if (!firstConfirm) {
+        return;
+    }
+
+
+    const secondConfirm =
+        confirm(
+            "本当に復元しますか？\n\n" +
+            "現在のデータは削除されます。"
+        );
+
+
+    if (!secondConfirm) {
+        return;
+    }
+
+
+    const transaction =
+        db.transaction(
+            ["salaries", "bonuses"],
+            "readwrite"
+        );
+
+
+    const salaryStore =
+        transaction.objectStore(
+            "salaries"
+        );
+
+    const bonusStore =
+        transaction.objectStore(
+            "bonuses"
+        );
+
+
+    salaryStore.clear();
+    bonusStore.clear();
+
+
+    data.salaries.forEach(
+        function(item) {
+
+            const copy =
+                Object.assign(
+                    {},
+                    item
+                );
+
+
+            delete copy.id;
+
+
+            salaryStore.add(
+                copy
+            );
+
+        }
+    );
+
+
+    data.bonuses.forEach(
+        function(item) {
+
+            const copy =
+                Object.assign(
+                    {},
+                    item
+                );
+
+
+            delete copy.id;
+
+
+            bonusStore.add(
+                copy
+            );
+
+        }
+    );
+
+
+    transaction.oncomplete =
+        function() {
+
+            alert(
+                "データを復元しました。"
+            );
+
+
+            resetSalaryForm();
+            resetBonusForm();
+
+            loadAll();
+
+            showPage(
+                "dashboard"
+            );
+
+        };
+
+
+    transaction.onerror =
+        function(event) {
+
+            alert(
+                "データの復元中にエラーが発生しました。"
+            );
+
+
+            console.error(
+                event.target.error
+            );
+
+        };
+
+}
+
+
+/* =========================================================
+   全体読み込み
+========================================================= */
+
+function loadAll() {
+
+    loadSalaryList();
+    loadBonusList();
+    updateSummary();
+    loadChart();
+
+}
+
+
+/* =========================================================
+   初期計算
+========================================================= */
+
+calculateSalary();
+calculateBonus();
+
+</script>
+
+</body>
+</html>
