@@ -1,0 +1,1949 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>プロフィール | 自分データベース</title>
+
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+    }
+
+
+    body {
+      margin: 0;
+
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        "Noto Sans JP",
+        sans-serif;
+
+      background: #f5f6f8;
+
+      color: #333;
+    }
+
+
+    /* =========================
+       ヘッダー
+    ========================= */
+
+    .header {
+      background: #ffffff;
+
+      border-bottom: 1px solid #ddd;
+
+      padding: 26px 20px;
+    }
+
+
+    .header-inner {
+      max-width: 1100px;
+
+      margin: 0 auto;
+    }
+
+
+    .header h1 {
+      margin: 0;
+
+      font-size: 28px;
+
+      font-weight: 700;
+
+      letter-spacing: 0.02em;
+    }
+
+
+    .header p {
+      margin: 7px 0 0;
+
+      color: #777;
+
+      font-size: 14px;
+    }
+
+
+    /* =========================
+       ナビゲーション
+    ========================= */
+
+    .nav {
+      position: sticky;
+
+      top: 0;
+
+      z-index: 100;
+
+      background: #ffffff;
+
+      border-bottom: 1px solid #ddd;
+
+      box-shadow:
+        0 2px 6px rgba(0, 0, 0, 0.05);
+    }
+
+
+    .nav-inner {
+      max-width: 1100px;
+
+      margin: 0 auto;
+
+      display: flex;
+
+      gap: 6px;
+
+      overflow-x: auto;
+
+      padding: 8px 12px;
+    }
+
+
+    .nav button {
+      border: none;
+
+      background: transparent;
+
+      padding: 10px 16px;
+
+      border-radius: 8px;
+
+      font-size: 14px;
+
+      white-space: nowrap;
+
+      cursor: pointer;
+
+      color: #555;
+    }
+
+
+    .nav button:hover {
+      background: #f0f1f3;
+    }
+
+
+    .nav button.active {
+      background: #f0f1f3;
+
+      color: #222;
+
+      font-weight: 600;
+    }
+
+
+    /* =========================
+       メイン
+    ========================= */
+
+    .container {
+      max-width: 900px;
+
+      margin: 0 auto;
+
+      padding:
+        32px
+        20px
+        60px;
+    }
+
+
+    /* =========================
+       ページタイトル
+    ========================= */
+
+    .page-header {
+      margin-bottom: 24px;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: space-between;
+
+      gap: 16px;
+    }
+
+
+    .page-header h2 {
+      margin: 0 0 6px;
+
+      font-size: 22px;
+    }
+
+
+    .page-header p {
+      margin: 0;
+
+      color: #777;
+
+      font-size: 14px;
+    }
+
+
+    /* =========================
+       ボタン
+    ========================= */
+
+    .button-group {
+      display: flex;
+
+      gap: 8px;
+
+      flex-wrap: wrap;
+    }
+
+
+    .button {
+      border: 1px solid #d5d7da;
+
+      background: #ffffff;
+
+      color: #444;
+
+      padding: 9px 16px;
+
+      border-radius: 8px;
+
+      font-size: 14px;
+
+      cursor: pointer;
+
+      transition:
+        background 0.15s ease,
+        border-color 0.15s ease;
+    }
+
+
+    .button:hover {
+      background: #f0f1f3;
+    }
+
+
+    .button.primary {
+      background: #333;
+
+      border-color: #333;
+
+      color: #ffffff;
+    }
+
+
+    .button.primary:hover {
+      background: #555;
+
+      border-color: #555;
+    }
+
+
+    /* =========================
+       プロフィールカード
+    ========================= */
+
+    .profile-card {
+      background: #ffffff;
+
+      border: 1px solid #e1e3e6;
+
+      border-radius: 14px;
+
+      overflow: hidden;
+    }
+
+
+    /* =========================
+       表示モード
+    ========================= */
+
+    .profile-list {
+      margin: 0;
+    }
+
+
+    .profile-row {
+      display: grid;
+
+      grid-template-columns: 180px 1fr;
+
+      min-height: 58px;
+
+      border-bottom: 1px solid #eeeeee;
+    }
+
+
+    .profile-row:last-child {
+      border-bottom: none;
+    }
+
+
+    .profile-label {
+      display: flex;
+
+      align-items: center;
+
+      padding: 14px 20px;
+
+      background: #fafafa;
+
+      font-size: 14px;
+
+      font-weight: 600;
+
+      color: #555;
+    }
+
+
+    .profile-value {
+      display: flex;
+
+      align-items: center;
+
+      padding: 14px 20px;
+
+      font-size: 15px;
+
+      color: #333;
+
+      word-break: break-word;
+    }
+
+
+    .empty-value {
+      color: #aaa;
+    }
+
+
+    /* =========================
+       編集フォーム
+    ========================= */
+
+    .edit-form {
+      padding: 24px;
+    }
+
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+
+    .form-group:last-child {
+      margin-bottom: 0;
+    }
+
+
+    .form-label {
+      display: block;
+
+      margin-bottom: 7px;
+
+      font-size: 14px;
+
+      font-weight: 600;
+
+      color: #555;
+    }
+
+
+    .form-input,
+    .form-select {
+      width: 100%;
+
+      border: 1px solid #d5d7da;
+
+      border-radius: 8px;
+
+      padding: 11px 12px;
+
+      background: #ffffff;
+
+      color: #333;
+
+      font-size: 15px;
+
+      outline: none;
+    }
+
+
+    .form-input:focus,
+    .form-select:focus {
+      border-color: #888;
+
+      box-shadow:
+        0 0 0 2px rgba(0, 0, 0, 0.05);
+    }
+
+
+    .form-note {
+      margin-top: 6px;
+
+      font-size: 12px;
+
+      color: #999;
+
+      line-height: 1.5;
+    }
+
+
+    /* =========================
+       編集下部ボタン
+    ========================= */
+
+    .edit-actions {
+      margin-top: 24px;
+
+      padding-top: 20px;
+
+      border-top: 1px solid #eeeeee;
+
+      display: flex;
+
+      justify-content: flex-end;
+
+      gap: 8px;
+    }
+
+
+    /* =========================
+       保存メッセージ
+    ========================= */
+
+    .save-message {
+      margin-top: 16px;
+
+      padding: 12px 16px;
+
+      border-radius: 8px;
+
+      background: #f0f1f3;
+
+      color: #555;
+
+      font-size: 13px;
+
+      display: none;
+    }
+
+
+    /* =========================
+       説明
+    ========================= */
+
+    .info-box {
+      margin-top: 24px;
+
+      background: #ffffff;
+
+      border: 1px solid #e1e3e6;
+
+      border-radius: 14px;
+
+      padding: 20px;
+    }
+
+
+    .info-box h3 {
+      margin: 0 0 8px;
+
+      font-size: 16px;
+    }
+
+
+    .info-box p {
+      margin: 0;
+
+      color: #777;
+
+      font-size: 13px;
+
+      line-height: 1.7;
+    }
+
+
+    /* =========================
+       トップへ戻る
+    ========================= */
+
+    .back-area {
+      margin-top: 24px;
+
+      text-align: center;
+    }
+
+
+    .back-button {
+      border: none;
+
+      background: transparent;
+
+      color: #777;
+
+      font-size: 13px;
+
+      cursor: pointer;
+
+      padding: 8px 12px;
+    }
+
+
+    .back-button:hover {
+      color: #333;
+
+      text-decoration: underline;
+    }
+
+
+    /* =========================
+       スマホ
+    ========================= */
+
+    @media (max-width: 600px) {
+
+      .header {
+        padding: 20px 16px;
+      }
+
+
+      .header h1 {
+        font-size: 23px;
+      }
+
+
+      .container {
+        padding:
+          24px
+          14px
+          50px;
+      }
+
+
+      .page-header {
+        align-items: flex-start;
+
+        flex-direction: column;
+      }
+
+
+      .profile-row {
+        grid-template-columns: 120px 1fr;
+      }
+
+
+      .profile-label {
+        padding: 12px 14px;
+
+        font-size: 13px;
+      }
+
+
+      .profile-value {
+        padding: 12px 14px;
+
+        font-size: 14px;
+      }
+
+
+      .edit-form {
+        padding: 20px;
+      }
+
+
+      .edit-actions {
+        justify-content: stretch;
+
+        flex-direction: column;
+      }
+
+
+      .edit-actions .button {
+        width: 100%;
+      }
+
+    }
+
+  </style>
+
+</head>
+
+
+<body>
+
+
+  <!-- =========================
+       ヘッダー
+  ========================= -->
+
+  <header class="header">
+
+    <div class="header-inner">
+
+      <h1>
+        自分データベース
+      </h1>
+
+      <p>
+        自分に関する情報をまとめて管理
+      </p>
+
+    </div>
+
+  </header>
+
+
+  <!-- =========================
+       ナビゲーション
+  ========================= -->
+
+  <nav class="nav">
+
+    <div class="nav-inner">
+
+      <button
+        onclick="window.location.href='index.html'"
+      >
+        トップ
+      </button>
+
+      <button
+        class="active"
+        onclick="window.location.href='profile.html'"
+      >
+        プロフィール
+      </button>
+
+      <button
+        onclick="window.location.href='money.html'"
+      >
+        お金
+      </button>
+
+      <button
+        onclick="alert('健康機能はこれから作ります。')"
+      >
+        健康
+      </button>
+
+      <button
+        onclick="alert('資格機能はこれから作ります。')"
+      >
+        資格
+      </button>
+
+      <button
+        onclick="alert('家族機能はこれから作ります。')"
+      >
+        家族
+      </button>
+
+    </div>
+
+  </nav>
+
+
+  <!-- =========================
+       メイン
+  ========================= -->
+
+  <main class="container">
+
+
+    <div class="page-header">
+
+      <div>
+
+        <h2>
+          プロフィール
+        </h2>
+
+        <p>
+          自分自身の基本情報を管理します。
+        </p>
+
+      </div>
+
+
+      <div class="button-group">
+
+        <button
+          class="button primary"
+          id="editButton"
+          onclick="startEdit()"
+        >
+          編集
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- =========================
+         表示エリア
+    ========================= -->
+
+    <div
+      class="profile-card"
+      id="displayArea"
+    >
+
+      <div class="profile-list">
+
+
+        <div class="profile-row">
+
+          <div class="profile-label">
+            氏名
+          </div>
+
+          <div
+            class="profile-value"
+            id="display-name"
+          >
+            <span class="empty-value">
+              未登録
+            </span>
+          </div>
+
+        </div>
+
+
+        <div class="profile-row">
+
+          <div class="profile-label">
+            生年月日
+          </div>
+
+          <div
+            class="profile-value"
+            id="display-birthDate"
+          >
+            <span class="empty-value">
+              未登録
+            </span>
+          </div>
+
+        </div>
+
+
+        <div class="profile-row">
+
+          <div class="profile-label">
+            年齢
+          </div>
+
+          <div
+            class="profile-value"
+            id="display-age"
+          >
+            <span class="empty-value">
+              未登録
+            </span>
+          </div>
+
+        </div>
+
+
+        <div class="profile-row">
+
+          <div class="profile-label">
+            性別
+          </div>
+
+          <div
+            class="profile-value"
+            id="display-gender"
+          >
+            <span class="empty-value">
+              未登録
+            </span>
+          </div>
+
+        </div>
+
+
+        <div class="profile-row">
+
+          <div class="profile-label">
+            血液型
+          </div>
+
+          <div
+            class="profile-value"
+            id="display-bloodType"
+          >
+            <span class="empty-value">
+              未登録
+            </span>
+          </div>
+
+        </div>
+
+
+        <div class="profile-row">
+
+          <div class="profile-label">
+            MBTI
+          </div>
+
+          <div
+            class="profile-value"
+            id="display-mbti"
+          >
+            <span class="empty-value">
+              未登録
+            </span>
+          </div>
+
+        </div>
+
+
+        <div class="profile-row">
+
+          <div class="profile-label">
+            出身地
+          </div>
+
+          <div
+            class="profile-value"
+            id="display-birthPlace"
+          >
+            <span class="empty-value">
+              未登録
+            </span>
+          </div>
+
+        </div>
+
+
+        <div class="profile-row">
+
+          <div class="profile-label">
+            現住所
+          </div>
+
+          <div
+            class="profile-value"
+            id="display-address"
+          >
+            <span class="empty-value">
+              未登録
+            </span>
+          </div>
+
+        </div>
+
+
+        <div class="profile-row">
+
+          <div class="profile-label">
+            身長
+          </div>
+
+          <div
+            class="profile-value"
+            id="display-height"
+          >
+            <span class="empty-value">
+              未登録
+            </span>
+          </div>
+
+        </div>
+
+
+        <div class="profile-row">
+
+          <div class="profile-label">
+            体重
+          </div>
+
+          <div
+            class="profile-value"
+            id="display-weight"
+          >
+            <span class="empty-value">
+              未登録
+            </span>
+          </div>
+
+        </div>
+
+
+        <div class="profile-row">
+
+          <div class="profile-label">
+            靴のサイズ
+          </div>
+
+          <div
+            class="profile-value"
+            id="display-shoeSize"
+          >
+            <span class="empty-value">
+              未登録
+            </span>
+          </div>
+
+        </div>
+
+
+        <div class="profile-row">
+
+          <div class="profile-label">
+            利き手
+          </div>
+
+          <div
+            class="profile-value"
+            id="display-dominantHand"
+          >
+            <span class="empty-value">
+              未登録
+            </span>
+          </div>
+
+        </div>
+
+
+      </div>
+
+    </div>
+
+
+    <!-- =========================
+         編集エリア
+    ========================= -->
+
+    <div
+      class="profile-card"
+      id="editArea"
+      style="display: none;"
+    >
+
+      <form
+        class="edit-form"
+        id="profileForm"
+      >
+
+
+        <div class="form-group">
+
+          <label
+            class="form-label"
+            for="name"
+          >
+            氏名
+          </label>
+
+          <input
+            class="form-input"
+            type="text"
+            id="name"
+            autocomplete="name"
+          >
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label
+            class="form-label"
+            for="birthDate"
+          >
+            生年月日
+          </label>
+
+          <input
+            class="form-input"
+            type="date"
+            id="birthDate"
+          >
+
+          <div class="form-note">
+            生年月日から年齢を自動計算します。
+          </div>
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label
+            class="form-label"
+            for="gender"
+          >
+            性別
+          </label>
+
+          <select
+            class="form-select"
+            id="gender"
+          >
+
+            <option value="">
+              選択してください
+            </option>
+
+            <option value="男性">
+              男性
+            </option>
+
+            <option value="女性">
+              女性
+            </option>
+
+            <option value="その他">
+              その他
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label
+            class="form-label"
+            for="bloodType"
+          >
+            血液型
+          </label>
+
+          <select
+            class="form-select"
+            id="bloodType"
+          >
+
+            <option value="">
+              選択してください
+            </option>
+
+            <option value="A型">
+              A型
+            </option>
+
+            <option value="B型">
+              B型
+            </option>
+
+            <option value="O型">
+              O型
+            </option>
+
+            <option value="AB型">
+              AB型
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label
+            class="form-label"
+            for="mbti"
+          >
+            MBTI
+          </label>
+
+          <select
+            class="form-select"
+            id="mbti"
+          >
+
+            <option value="">
+              選択してください
+            </option>
+
+            <option value="INTJ">INTJ</option>
+            <option value="INTP">INTP</option>
+            <option value="ENTJ">ENTJ</option>
+            <option value="ENTP">ENTP</option>
+
+            <option value="INFJ">INFJ</option>
+            <option value="INFP">INFP</option>
+            <option value="ENFJ">ENFJ</option>
+            <option value="ENFP">ENFP</option>
+
+            <option value="ISTJ">ISTJ</option>
+            <option value="ISFJ">ISFJ</option>
+            <option value="ESTJ">ESTJ</option>
+            <option value="ESFJ">ESFJ</option>
+
+            <option value="ISTP">ISTP</option>
+            <option value="ISFP">ISFP</option>
+            <option value="ESTP">ESTP</option>
+            <option value="ESFP">ESFP</option>
+
+          </select>
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label
+            class="form-label"
+            for="birthPlace"
+          >
+            出身地
+          </label>
+
+          <input
+            class="form-input"
+            type="text"
+            id="birthPlace"
+            placeholder="例：埼玉県"
+          >
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label
+            class="form-label"
+            for="address"
+          >
+            現住所
+          </label>
+
+          <input
+            class="form-input"
+            type="text"
+            id="address"
+            autocomplete="street-address"
+            placeholder="例：埼玉県○○市"
+          >
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label
+            class="form-label"
+            for="height"
+          >
+            身長
+          </label>
+
+          <input
+            class="form-input"
+            type="number"
+            id="height"
+            min="0"
+            max="300"
+            step="0.1"
+            inputmode="decimal"
+            placeholder="例：170.0"
+          >
+
+          <div class="form-note">
+            cm単位で入力してください。
+          </div>
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label
+            class="form-label"
+            for="weight"
+          >
+            体重
+          </label>
+
+          <input
+            class="form-input"
+            type="number"
+            id="weight"
+            min="0"
+            max="500"
+            step="0.1"
+            inputmode="decimal"
+            placeholder="例：65.0"
+          >
+
+          <div class="form-note">
+            kg単位で入力してください。
+          </div>
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label
+            class="form-label"
+            for="shoeSize"
+          >
+            靴のサイズ
+          </label>
+
+          <input
+            class="form-input"
+            type="number"
+            id="shoeSize"
+            min="0"
+            max="50"
+            step="0.5"
+            inputmode="decimal"
+            placeholder="例：26.5"
+          >
+
+          <div class="form-note">
+            cm単位で入力してください。
+          </div>
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label
+            class="form-label"
+            for="dominantHand"
+          >
+            利き手
+          </label>
+
+          <select
+            class="form-select"
+            id="dominantHand"
+          >
+
+            <option value="">
+              選択してください
+            </option>
+
+            <option value="右">
+              右
+            </option>
+
+            <option value="左">
+              左
+            </option>
+
+            <option value="両利き">
+              両利き
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <div class="edit-actions">
+
+          <button
+            type="button"
+            class="button"
+            onclick="cancelEdit()"
+          >
+            キャンセル
+          </button>
+
+          <button
+            type="submit"
+            class="button primary"
+          >
+            保存
+          </button>
+
+        </div>
+
+
+      </form>
+
+    </div>
+
+
+    <!-- 保存メッセージ -->
+
+    <div
+      class="save-message"
+      id="saveMessage"
+    >
+      プロフィールを保存しました。
+    </div>
+
+
+    <!-- 説明 -->
+
+    <div class="info-box">
+
+      <h3>
+        データの保存について
+      </h3>
+
+      <p>
+        プロフィール情報は、このブラウザのIndexedDBに保存されます。
+        GitHub上のHTMLファイルに個人情報が保存されるわけではありません。
+        ブラウザのデータを削除した場合は、登録した情報も削除される場合があります。
+      </p>
+
+    </div>
+
+
+    <!-- トップページへ -->
+
+    <div class="back-area">
+
+      <button
+        class="back-button"
+        onclick="window.location.href='index.html'"
+      >
+        ← トップページへ戻る
+      </button>
+
+    </div>
+
+
+  </main>
+
+
+  <!-- =========================
+       共通DB
+  ========================= -->
+
+  <script src="db.js"></script>
+
+
+  <!-- =========================
+       プロフィールJavaScript
+  ========================= -->
+
+  <script>
+
+
+    /* =========================
+       年齢計算
+    ========================= */
+
+    function calculateAge(birthDate) {
+
+      if (!birthDate) {
+        return "";
+      }
+
+
+      const birth =
+        new Date(
+          birthDate + "T00:00:00"
+        );
+
+
+      if (
+        Number.isNaN(
+          birth.getTime()
+        )
+      ) {
+
+        return "";
+
+      }
+
+
+      const today =
+        new Date();
+
+
+      let age =
+        today.getFullYear()
+        - birth.getFullYear();
+
+
+      const birthdayThisYear =
+        new Date(
+          today.getFullYear(),
+          birth.getMonth(),
+          birth.getDate()
+        );
+
+
+      if (
+        today < birthdayThisYear
+      ) {
+
+        age--;
+
+      }
+
+
+      return age >= 0
+        ? age
+        : "";
+
+    }
+
+
+    /* =========================
+       日付表示
+    ========================= */
+
+    function formatDate(dateString) {
+
+      if (!dateString) {
+        return "";
+      }
+
+
+      const parts =
+        dateString.split("-");
+
+
+      if (parts.length !== 3) {
+        return dateString;
+      }
+
+
+      return (
+        parts[0]
+        + "年"
+        + Number(parts[1])
+        + "月"
+        + Number(parts[2])
+        + "日"
+      );
+
+    }
+
+
+    /* =========================
+       表示用テキスト設定
+    ========================= */
+
+    function setDisplay(
+      id,
+      value,
+      suffix = ""
+    ) {
+
+      const element =
+        document.getElementById(id);
+
+
+      element.textContent = "";
+
+
+      if (
+        value === null ||
+        value === undefined ||
+        value === ""
+      ) {
+
+        const span =
+          document.createElement("span");
+
+
+        span.className =
+          "empty-value";
+
+
+        span.textContent =
+          "未登録";
+
+
+        element.appendChild(span);
+
+
+        return;
+
+      }
+
+
+      element.textContent =
+        String(value) + suffix;
+
+    }
+
+
+    /* =========================
+       プロフィール表示
+    ========================= */
+
+    function renderProfile(data) {
+
+      setDisplay(
+        "display-name",
+        data?.name
+      );
+
+
+      setDisplay(
+        "display-birthDate",
+        formatDate(
+          data?.birthDate
+        )
+      );
+
+
+      const age =
+        calculateAge(
+          data?.birthDate
+        );
+
+
+      setDisplay(
+        "display-age",
+        age,
+        age !== ""
+          ? "歳"
+          : ""
+      );
+
+
+      setDisplay(
+        "display-gender",
+        data?.gender
+      );
+
+
+      setDisplay(
+        "display-bloodType",
+        data?.bloodType
+      );
+
+
+      setDisplay(
+        "display-mbti",
+        data?.mbti
+      );
+
+
+      setDisplay(
+        "display-birthPlace",
+        data?.birthPlace
+      );
+
+
+      setDisplay(
+        "display-address",
+        data?.address
+      );
+
+
+      setDisplay(
+        "display-height",
+        data?.height,
+        data?.height !== ""
+        && data?.height !== undefined
+          ? " cm"
+          : ""
+      );
+
+
+      setDisplay(
+        "display-weight",
+        data?.weight,
+        data?.weight !== ""
+        && data?.weight !== undefined
+          ? " kg"
+          : ""
+      );
+
+
+      setDisplay(
+        "display-shoeSize",
+        data?.shoeSize,
+        data?.shoeSize !== ""
+        && data?.shoeSize !== undefined
+          ? " cm"
+          : ""
+      );
+
+
+      setDisplay(
+        "display-dominantHand",
+        data?.dominantHand
+      );
+
+    }
+
+
+    /* =========================
+       編集開始
+    ========================= */
+
+    async function startEdit() {
+
+      try {
+
+        const data =
+          await getProfile(db);
+
+
+        if (data) {
+
+          document
+            .getElementById("name")
+            .value =
+              data.name || "";
+
+
+          document
+            .getElementById("birthDate")
+            .value =
+              data.birthDate || "";
+
+
+          document
+            .getElementById("gender")
+            .value =
+              data.gender || "";
+
+
+          document
+            .getElementById("bloodType")
+            .value =
+              data.bloodType || "";
+
+
+          document
+            .getElementById("mbti")
+            .value =
+              data.mbti || "";
+
+
+          document
+            .getElementById("birthPlace")
+            .value =
+              data.birthPlace || "";
+
+
+          document
+            .getElementById("address")
+            .value =
+              data.address || "";
+
+
+          document
+            .getElementById("height")
+            .value =
+              data.height || "";
+
+
+          document
+            .getElementById("weight")
+            .value =
+              data.weight || "";
+
+
+          document
+            .getElementById("shoeSize")
+            .value =
+              data.shoeSize || "";
+
+
+          document
+            .getElementById("dominantHand")
+            .value =
+              data.dominantHand || "";
+
+        }
+
+        else {
+
+          document
+            .getElementById("profileForm")
+            .reset();
+
+        }
+
+
+        document
+          .getElementById("displayArea")
+          .style.display =
+            "none";
+
+
+        document
+          .getElementById("editArea")
+          .style.display =
+            "block";
+
+
+        document
+          .getElementById("editButton")
+          .style.display =
+            "none";
+
+
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth"
+        });
+
+      }
+
+      catch (error) {
+
+        console.error(error);
+
+        alert(
+          "プロフィールの読み込みに失敗しました。"
+        );
+
+      }
+
+    }
+
+
+    /* =========================
+       編集キャンセル
+    ========================= */
+
+    async function cancelEdit() {
+
+      try {
+
+        const data =
+          await getProfile(db);
+
+
+        renderProfile(data);
+
+
+        document
+          .getElementById("editArea")
+          .style.display =
+            "none";
+
+
+        document
+          .getElementById("displayArea")
+          .style.display =
+            "block";
+
+
+        document
+          .getElementById("editButton")
+          .style.display =
+            "inline-block";
+
+      }
+
+      catch (error) {
+
+        console.error(error);
+
+        alert(
+          "プロフィールの読み込みに失敗しました。"
+        );
+
+      }
+
+    }
+
+
+    /* =========================
+       保存
+    ========================= */
+
+    document
+      .getElementById("profileForm")
+      .addEventListener(
+        "submit",
+        async function(event) {
+
+          event.preventDefault();
+
+
+          const data = {
+
+            id: "main",
+
+
+            name:
+              document
+                .getElementById("name")
+                .value
+                .trim(),
+
+
+            birthDate:
+              document
+                .getElementById("birthDate")
+                .value,
+
+
+            gender:
+              document
+                .getElementById("gender")
+                .value,
+
+
+            bloodType:
+              document
+                .getElementById("bloodType")
+                .value,
+
+
+            mbti:
+              document
+                .getElementById("mbti")
+                .value,
+
+
+            birthPlace:
+              document
+                .getElementById("birthPlace")
+                .value
+                .trim(),
+
+
+            address:
+              document
+                .getElementById("address")
+                .value
+                .trim(),
+
+
+            height:
+              document
+                .getElementById("height")
+                .value,
+
+
+            weight:
+              document
+                .getElementById("weight")
+                .value,
+
+
+            shoeSize:
+              document
+                .getElementById("shoeSize")
+                .value,
+
+
+            dominantHand:
+              document
+                .getElementById("dominantHand")
+                .value
+
+          };
+
+
+          try {
+
+            await saveProfile(
+              db,
+              data
+            );
+
+
+            renderProfile(data);
+
+
+            document
+              .getElementById("editArea")
+              .style.display =
+                "none";
+
+
+            document
+              .getElementById("displayArea")
+              .style.display =
+                "block";
+
+
+            document
+              .getElementById("editButton")
+              .style.display =
+                "inline-block";
+
+
+            const message =
+              document
+                .getElementById("saveMessage");
+
+
+            message.style.display =
+              "block";
+
+
+            setTimeout(
+              function() {
+
+                message.style.display =
+                  "none";
+
+              },
+              2500
+            );
+
+          }
+
+          catch (error) {
+
+            console.error(error);
+
+            alert(
+              "プロフィールの保存に失敗しました。"
+            );
+
+          }
+
+        }
+      );
+
+
+    /* =========================
+       初期化
+    ========================= */
+
+    async function initialize() {
+
+      try {
+
+        await requestDB();
+
+
+        const data =
+          await getProfile(db);
+
+
+        renderProfile(data);
+
+      }
+
+      catch (error) {
+
+        console.error(error);
+
+        alert(
+          "データベースを開けませんでした。"
+        );
+
+      }
+
+    }
+
+
+    initialize();
+
+  </script>
+
+
+</body>
+
+</html>

@@ -1678,76 +1678,18 @@ canvas {
 
 </div>
 
+<script src="db.js"></script>
 
 <script>
 "use strict";
 
 /* =========================================================
    IndexedDB
+   DB管理は db.js に統一
 ========================================================= */
-
-const DB_NAME = "SalaryAppDB";
-const DB_VERSION = 3;
-
-let db = null;
 
 let editingSalaryId = null;
 let editingBonusId = null;
-
-const requestDB = indexedDB.open(DB_NAME, DB_VERSION);
-
-requestDB.onupgradeneeded = function(event) {
-
-    db = event.target.result;
-
-    if (!db.objectStoreNames.contains("salaries")) {
-
-        db.createObjectStore("salaries", {
-            keyPath: "id",
-            autoIncrement: true
-        });
-
-    }
-
-    if (!db.objectStoreNames.contains("bonuses")) {
-
-        db.createObjectStore("bonuses", {
-            keyPath: "id",
-            autoIncrement: true
-        });
-
-    }
-};
-
-
-requestDB.onsuccess = function(event) {
-
-    db = event.target.result;
-
-    db.onerror = function(event) {
-        console.error(
-            "IndexedDB error:",
-            event.target.error
-        );
-    };
-
-    setupNavigation();
-    setupYearSelect();
-    setDefaultDates();
-    resetSalaryForm();
-    resetBonusForm();
-    loadAll();
-};
-
-
-requestDB.onerror = function(event) {
-
-    alert(
-        "データベースを開けませんでした。"
-    );
-
-    console.error(event.target.error);
-};
 
 
 /* =========================================================
@@ -2075,10 +2017,6 @@ function resetSalaryForm() {
     document.getElementById(
         "salaryDate"
     ).value = todayString();
-
-    /*
-     * 初期値は個人情報を含まないようにしています。
-     */
 
     document.getElementById(
         "salaryBase"
@@ -3156,7 +3094,6 @@ function loadSalaryList() {
                     const net =
                         getSalaryNet(item);
 
-                    /* 支給日 */
                     const dateTd =
                         document.createElement("td");
 
@@ -3165,7 +3102,6 @@ function loadSalaryList() {
 
                     tr.appendChild(dateTd);
 
-                    /* 総支給 */
                     const grossTd =
                         document.createElement("td");
 
@@ -3174,7 +3110,6 @@ function loadSalaryList() {
 
                     tr.appendChild(grossTd);
 
-                    /* 控除 */
                     const deductionTd =
                         document.createElement("td");
 
@@ -3183,7 +3118,6 @@ function loadSalaryList() {
 
                     tr.appendChild(deductionTd);
 
-                    /* 手取り */
                     const netTd =
                         document.createElement("td");
 
@@ -3192,7 +3126,6 @@ function loadSalaryList() {
 
                     tr.appendChild(netTd);
 
-                    /* 操作 */
                     const actionTd =
                         document.createElement("td");
 
@@ -3309,7 +3242,6 @@ function loadBonusList() {
                     const net =
                         getBonusNet(item);
 
-                    /* 支給日 */
                     const dateTd =
                         document.createElement("td");
 
@@ -3318,7 +3250,6 @@ function loadBonusList() {
 
                     tr.appendChild(dateTd);
 
-                    /* 総支給 */
                     const grossTd =
                         document.createElement("td");
 
@@ -3327,7 +3258,6 @@ function loadBonusList() {
 
                     tr.appendChild(grossTd);
 
-                    /* 控除 */
                     const deductionTd =
                         document.createElement("td");
 
@@ -3336,7 +3266,6 @@ function loadBonusList() {
 
                     tr.appendChild(deductionTd);
 
-                    /* 手取り */
                     const netTd =
                         document.createElement("td");
 
@@ -3345,7 +3274,6 @@ function loadBonusList() {
 
                     tr.appendChild(netTd);
 
-                    /* 操作 */
                     const actionTd =
                         document.createElement("td");
 
@@ -3946,11 +3874,6 @@ function drawChart(
     const ctx =
         canvas.getContext("2d");
 
-    /*
-     * 内部描画サイズは1000x400を維持。
-     * CSS側でスマホ画面に縮小表示します。
-     */
-
     const width =
         canvas.width;
 
@@ -4200,8 +4123,6 @@ function drawChart(
     ctx.strokeStyle = "#bbb";
     ctx.fillStyle = "#bbb";
     drawLine(bonusNet);
-
-    /* 凡例 */
 
     const legendY = 15;
 
@@ -4579,11 +4500,40 @@ function loadAll() {
 
 
 /* =========================================================
-   初期計算
+   初期化
 ========================================================= */
 
-calculateSalary();
-calculateBonus();
+async function initialize() {
+
+    try {
+
+        /*
+         * DBの生成・バージョン管理は
+         * db.js に任せます。
+         */
+        await requestDB();
+
+        setupNavigation();
+        setupYearSelect();
+        setDefaultDates();
+        resetSalaryForm();
+        resetBonusForm();
+        loadAll();
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "データベースを開けませんでした。"
+        );
+
+    }
+
+}
+
+
+initialize();
 
 </script>
 
